@@ -7,6 +7,6 @@ let package = Package(
     products: [.library(name: "WeatherCore", targets: ["WeatherCore"])],
     targets: [
         .target(name: "WeatherCore", path: "Shared/Core"),
-        .testTarget(name: "WeatherCoreTests", dependencies: ["WeatherCore"], path: "CoreTests")
+        .testTarget(name: "WeatherCoreTests", dependencies: ["WeatherCore"], path: "CoreTests", resources: [.copy("Fixtures")])
     ]
 )

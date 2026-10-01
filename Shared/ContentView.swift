@@ -6,19 +6,40 @@ struct ContentView: View {
     @Environment(\.scenePhase) private var scenePhase
     @State private var showSearch = false
     @State private var showSettings = false
+    @State private var section = "Forecast"
+    @Environment(\.openURL) private var openURL
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 22) {
                     if !model.savedPlaces.isEmpty { savedPlaces }
-                    if let message = location.message { notice(message, symbol: "location.slash") }
+                    if model.selectedPlace != nil {
+                        Picker("View", selection: $section) {
+                            Text("Forecast").tag("Forecast")
+                            Text("Maps").tag("Maps")
+                            Text("Fishing").tag("Fishing")
+                        }.pickerStyle(.segmented).accessibilityIdentifier("weatherSection")
+                    }
+                    if let message = location.message {
+                        notice(message, symbol: "location.slash")
+                        HStack {
+                            Button("Location Settings") { openLocationSettings() }
+                            Button("Search instead") { showSearch = true }
+                        }.buttonStyle(.bordered)
+                    }
                     if let message = model.message { notice(message, symbol: "wifi.exclamationmark") }
-                    if let forecast = model.forecast {
+                    if section == "Maps", let place = model.selectedPlace {
+                        WeatherMapView(place: place, units: model.units)
+                    } else if let forecast = model.forecast {
                         TimelineView(.periodic(from: .now, by: 60)) { context in
                             if forecast.canUseOffline(at: context.date) {
-                                ForecastDashboard(forecast: forecast, units: model.units,
-                                                  playful: model.playful, isCached: model.isCached)
+                                if section == "Fishing" {
+                                    FishingView(forecast: forecast, units: model.units, isCached: model.isCached)
+                                } else {
+                                    ForecastDashboard(forecast: forecast, units: model.units,
+                                                      playful: model.playful, isCached: model.isCached)
+                                }
                             } else {
                                 VStack(alignment: .leading, spacing: 12) {
                                     Text("This saved forecast has expired.").font(.headline)
@@ -102,6 +123,14 @@ struct ContentView: View {
         #endif
     }
 
+    private func openLocationSettings() {
+        #if os(iOS)
+        openURL(URL(string: UIApplication.openSettingsURLString)!)
+        #elseif os(macOS)
+        openURL(URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_LocationServices")!)
+        #endif
+    }
+
     private var welcome: some View {
         VStack(spacing: 20) {
             Image(systemName: "cloud.sun.fill")
@@ -115,6 +144,10 @@ struct ContentView: View {
                 .buttonStyle(.borderedProminent).controlSize(.large)
                 .accessibilityIdentifier("welcomeSearch")
             Button("Use my location") { location.request() }.disabled(location.isLocating)
+            Button("Try Berne, Indiana") {
+                model.select(Place(name: "Berne, IN, US", latitude: 40.6581, longitude: -84.9519,
+                                   timeZoneIdentifier: "America/Indiana/Indianapolis"))
+            }.accessibilityIdentifier("tryBerne")
             Text("Location is optional and only requested when you ask. No account needed.")
                 .font(.footnote).foregroundStyle(.secondary).multilineTextAlignment(.center)
         }.padding(.vertical, 64).frame(maxWidth: .infinity)
@@ -177,7 +210,7 @@ private struct ForecastDashboard: View {
                         Label("Saved forecast · refresh for current conditions", systemImage: "clock.arrow.circlepath")
                             .foregroundStyle(.orange)
                     }
-                    Text("Observed \(date(forecast.observedAt, format: "MMM d, h:mm a")) · Updated \(date(forecast.fetchedAt, format: "MMM d, h:mm a"))")
+                    Text("\(forecast.isModelled == true ? "Model time" : "Observed") \(date(forecast.observedAt, format: "MMM d, h:mm a")) · Updated \(date(forecast.fetchedAt, format: "MMM d, h:mm a"))")
                     Text("Times shown in \(forecast.place.timeZone.identifier).")
                 }.font(.caption).foregroundStyle(.secondary)
             }
@@ -240,7 +273,7 @@ private struct ForecastDashboard: View {
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 145), spacing: 14)], spacing: 14) {
                 metric("Wind", value: units.wind(forecast.windSpeed), symbol: "wind")
                 metric("Humidity", value: forecast.humidity.formatted(.percent.precision(.fractionLength(0))), symbol: "humidity")
-                metric("UV index", value: "\(forecast.uvIndex)", symbol: "sun.max")
+                metric(forecast.uvIsDailyMaximum == true ? "Max UV today" : "UV index", value: "\(forecast.uvIndex)", symbol: "sun.max")
                 metric("Feels like", value: units.temperature(forecast.feelsLike), symbol: "thermometer.medium")
                 if let sunrise = forecast.days.first?.sunrise {
                     metric("Sunrise", value: date(sunrise, format: "h:mm a"), symbol: "sunrise")
@@ -250,15 +283,8 @@ private struct ForecastDashboard: View {
                 }
             }
 
-            Link(destination: forecast.attributionURL) {
-                VStack(spacing: 8) {
-                    AsyncImage(url: colorScheme == .dark ? forecast.lightMarkURL : forecast.darkMarkURL) { image in
-                        image.resizable().scaledToFit()
-                    } placeholder: { Text("Apple Weather").font(.headline) }
-                        .frame(width: 130, height: 26)
-                    Text("Weather data sources & attribution").font(.caption)
-                }.frame(maxWidth: .infinity).padding(.vertical)
-            }.accessibilityLabel("Apple Weather data sources and attribution")
+            ForecastAttribution(forecast: forecast)
+
         }
     }
 
@@ -319,6 +345,7 @@ private struct PlaceSearchView: View {
                 if model.isSearching { ProgressView("Searching…") }
                 if let message = model.searchMessage { Text(message).foregroundStyle(.secondary) }
                 if query.count < 2 { Text("Search anywhere. Add a state or country for a more precise match.").foregroundStyle(.secondary) }
+                Text("Place search: Open-Meteo / GeoNames; Apple fallback.").font(.caption2).foregroundStyle(.secondary)
                 List(model.searchResults) { place in
                     Button {
                         select(place)
@@ -348,6 +375,11 @@ private struct WeatherSettingsView: View {
         NavigationStack {
             Form {
                 Section("Preferences") {
+                    Picker("Weather provider", selection: $model.source) {
+                        ForEach(WeatherSource.allCases) { Text($0.label).tag($0) }
+                    }
+                    Text("Open-Meteo works without an API key for personal, non-commercial use. Apple Weather needs a WeatherKit-enabled signing profile.")
+                        .font(.caption).foregroundStyle(.secondary)
                     Picker("Units", selection: $model.units) {
                         ForEach(WeatherUnits.allCases) { Text($0.label).tag($0) }
                     }.accessibilityIdentifier("unitsPicker")
@@ -366,10 +398,12 @@ private struct WeatherSettingsView: View {
                     }
                 }
                 Section("Privacy & storage") {
-                    Text("Weather uses Apple Weather and Apple’s location search. Search terms and requested coordinates are sent to Apple to provide results. Saved places and recent forecasts stay on this device. The app has no accounts, ads, or analytics and does not track your location in the background.")
+                    Text("Weather sends requested coordinates to your chosen forecast provider (Open-Meteo by default, or Apple Weather). City searches use Open-Meteo / GeoNames, with Apple search as a fallback. Maps sends the selected coordinates to Windy when opened. Saved places and recent forecasts stay on this device. There are no accounts, ads, app analytics, or background location tracking.")
                     Text("Cached weather is kept for offline display for up to 24 hours and is always marked as saved. Alerts are informational; this app does not deliver emergency notifications.")
                     Button("Delete saved places and weather", role: .destructive) { confirmClear = true }
                         .accessibilityIdentifier("clearWeatherData")
+                    Link("Open-Meteo terms & privacy", destination: URL(string: "https://open-meteo.com/en/terms")!)
+                    Link("Windy map provider", destination: URL(string: "https://embed.windy.com/")!)
                     Link("Apple privacy policy", destination: URL(string: "https://www.apple.com/legal/privacy/")!)
                 }
                 Section("About") {
@@ -389,5 +423,24 @@ private struct WeatherSettingsView: View {
         #if os(macOS)
         .frame(width: 560, height: 620)
         #endif
+    }
+}
+
+
+struct ForecastAttribution: View {
+    let forecast: Forecast
+    @Environment(\.colorScheme) private var colorScheme
+    var body: some View {
+        Link(destination: forecast.attributionURL) {
+            VStack(spacing: 8) {
+                if let mark = colorScheme == .dark ? forecast.lightMarkURL : forecast.darkMarkURL {
+                    AsyncImage(url: mark) { image in image.resizable().scaledToFit() } placeholder: { Text("Apple Weather").font(.headline) }
+                        .frame(width: 130, height: 26)
+                } else {
+                    Text(forecast.sourceName ?? "Weather provider").font(.headline)
+                }
+                Text(forecast.sourceName == "Open-Meteo" ? "Weather data by Open-Meteo · CC BY 4.0" : "Weather data sources & attribution").font(.caption)
+            }.frame(maxWidth: .infinity).padding(.vertical)
+        }.accessibilityLabel("\(forecast.sourceName ?? "Apple Weather") data sources and attribution")
     }
 }

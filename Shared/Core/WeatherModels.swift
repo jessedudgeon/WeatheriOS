@@ -35,6 +35,12 @@ struct HourForecast: Codable, Identifiable {
     let symbol: String
     let temperature: Double
     let precipitationChance: Double
+    var windSpeed: Double? = nil
+    var windGust: Double? = nil
+    var pressure: Double? = nil
+    var precipitation: Double? = nil
+    var isDaylight: Bool? = nil
+    var weatherCode: Int? = nil
 }
 
 struct DayForecast: Codable, Identifiable {
@@ -71,8 +77,14 @@ struct Forecast: Codable {
     let warnings: [WeatherWarning]
     let alertsAvailable: Bool
     let attributionURL: URL
-    let lightMarkURL: URL
-    let darkMarkURL: URL
+    let lightMarkURL: URL?
+    let darkMarkURL: URL?
+    var sourceName: String? = nil
+    var pressure: Double? = nil
+    var windGust: Double? = nil
+    var windDirection: Double? = nil
+    var isModelled: Bool? = nil
+    var uvIsDailyMaximum: Bool? = nil
 
     func isStale(at date: Date = Date()) -> Bool {
         date.timeIntervalSince(fetchedAt) > 30 * 60
@@ -146,4 +158,11 @@ struct WeatherPersistence {
     func clear() {
         [placesKey, cacheKey, selectedKey].forEach { defaults.removeObject(forKey: $0) }
     }
+}
+
+
+enum WeatherSource: String, CaseIterable, Identifiable {
+    case openMeteo, apple
+    var id: String { rawValue }
+    var label: String { self == .openMeteo ? "Open-Meteo (no setup)" : "Apple Weather (requires provisioning)" }
 }

@@ -3,6 +3,34 @@ import XCTest
 final class Tests_iOS: XCTestCase {
     override func setUpWithError() throws { continueAfterFailure = false }
 
+    func testLiveOpenMeteoLoadsWithoutWeatherKitProvisioning() {
+        let app = XCUIApplication()
+        app.launchArguments = ["--live-weather-test"]
+        app.launch()
+        XCTAssertTrue(app.staticTexts["forecastPlace"].waitForExistence(timeout: 45), "Live Open-Meteo should load without WeatherKit credentials")
+        let attachment = XCTAttachment(screenshot: app.screenshot())
+        attachment.name = "Live forecast"
+        attachment.lifetime = .keepAlways
+        add(attachment)
+    }
+
+    func testFishingAndMapNavigation() {
+        let app = XCUIApplication()
+        app.launchArguments = ["--ui-testing"]
+        app.launch()
+        XCTAssertTrue(app.staticTexts["forecastPlace"].waitForExistence(timeout: 10))
+        app.segmentedControls["weatherSection"].buttons["Fishing"].tap()
+        XCTAssertTrue(app.otherElements["fishingHeader"].waitForExistence(timeout: 5) || app.staticTexts["Plan your next cast."].exists)
+        let attachment = XCTAttachment(screenshot: app.screenshot())
+        attachment.name = "Fishing briefing"
+        attachment.lifetime = .keepAlways
+        add(attachment)
+        app.segmentedControls["weatherSection"].buttons["Maps"].tap()
+        XCTAssertTrue(app.staticTexts["weatherMapHeader"].waitForExistence(timeout: 5))
+        app.segmentedControls["mapLayerPicker"].buttons["Wind"].tap()
+        XCTAssertTrue(app.webViews.firstMatch.waitForExistence(timeout: 10))
+    }
+
     func testFirstLaunchOffersSearchWithoutLocationPermission() {
         let app = XCUIApplication()
         app.launchArguments = ["--ui-testing", "--empty"]

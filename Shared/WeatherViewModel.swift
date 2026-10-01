@@ -14,27 +14,31 @@ final class WeatherViewModel: ObservableObject {
     @Published private(set) var isSearching = false
     @Published private(set) var searchMessage: String?
     @Published var units: WeatherUnits { didSet { defaults.set(units.rawValue, forKey: "weather.units") } }
+    @Published var source: WeatherSource {
+        didSet {
+            defaults.set(source.rawValue, forKey: "weather.source")
+            if oldValue != source { refresh() }
+        }
+    }
     @Published var playful: Bool { didSet { defaults.set(playful, forKey: "weather.playful") } }
 
-    private let provider: any WeatherProviding
+    private let provider: (any WeatherProviding)?
     private let persistence: WeatherPersistence
     private let defaults: UserDefaults
     private let searchGeocoder = CLGeocoder()
-    private let locationGeocoder = CLGeocoder()
     private var fetchTask: Task<Void, Never>?
     private var fetchTimeout: Task<Void, Never>?
     private var searchTask: Task<Void, Never>?
-    private var locationTask: Task<Void, Never>?
     private var requestID = UUID()
     private var searchID = UUID()
-    private var locationID = UUID()
 
-    init(provider: any WeatherProviding = AppleWeatherProvider(), defaults: UserDefaults = .standard) {
+    init(provider: (any WeatherProviding)? = nil, defaults: UserDefaults = .standard) {
         self.provider = provider
         self.defaults = defaults
         persistence = WeatherPersistence(defaults: defaults)
         savedPlaces = persistence.places
         units = WeatherUnits(rawValue: defaults.string(forKey: "weather.units") ?? "") ?? .imperial
+        source = WeatherSource(rawValue: defaults.string(forKey: "weather.source") ?? "") ?? .openMeteo
         playful = defaults.bool(forKey: "weather.playful")
         if let place = savedPlaces.first(where: { $0.id == persistence.selectedID }) ?? savedPlaces.first {
             select(place)
@@ -43,7 +47,6 @@ final class WeatherViewModel: ObservableObject {
 
     func select(_ place: Place) {
         guard place.isValid else { return }
-        cancelLocationLookup()
         fetchTask?.cancel()
         fetchTimeout?.cancel()
         requestID = UUID()
@@ -54,21 +57,33 @@ final class WeatherViewModel: ObservableObject {
         isCached = forecast != nil
         message = nil
         isLoading = true
-        fetchTask = Task { [weak self, provider] in
+        let activeProvider: any WeatherProviding
+        if let provider { activeProvider = provider }
+        else if source == .apple { activeProvider = AppleWeatherProvider() }
+        else { activeProvider = OpenMeteoProvider() }
+        let source = self.source
+        fetchTask = Task { [weak self] in
             do {
-                let result = try await provider.forecast(for: place)
+                let result = try await activeProvider.forecast(for: place)
                 guard let self, !Task.isCancelled, self.requestID == id else { return }
                 self.fetchTimeout?.cancel()
                 self.forecast = result
+                self.selectedPlace = result.place
                 self.persistence.save(result)
                 self.isCached = false
                 self.isLoading = false
             } catch {
                 guard let self, !Task.isCancelled, self.requestID == id else { return }
                 self.fetchTimeout?.cancel()
-                self.message = self.forecast == nil
-                    ? "Weather couldn’t load. Check your connection and try again."
-                    : "Couldn’t refresh. Showing your last saved forecast; conditions may have changed."
+                let detail: String
+                if source == .apple {
+                    detail = "Apple Weather couldn’t load. Its App ID needs WeatherKit provisioning. Switch to Open-Meteo in Settings to load weather without that setup."
+                } else if let error = error as? URLError {
+                    detail = "Weather couldn’t connect: \(error.localizedDescription) Try again when you’re online."
+                } else {
+                    detail = "Weather couldn’t load: \(error.localizedDescription)"
+                }
+                self.message = detail + (self.forecast == nil ? "" : " Showing the last saved forecast.")
                 self.isLoading = false
             }
         }
@@ -130,7 +145,6 @@ final class WeatherViewModel: ObservableObject {
         fetchTask?.cancel()
         fetchTimeout?.cancel()
         requestID = UUID()
-        cancelLocationLookup()
         cancelSearch()
         persistence.clear()
         savedPlaces = []
@@ -151,10 +165,14 @@ final class WeatherViewModel: ObservableObject {
             do {
                 try await Task.sleep(nanoseconds: 500_000_000)
                 guard let self, !Task.isCancelled else { return }
-                let results = try await self.searchGeocoder.geocodeAddressString(trimmed)
+                var places = (try? await OpenPlaceSearch().search(trimmed)) ?? []
+                try Task.checkCancellation()
+                if places.isEmpty {
+                    places = try await self.searchGeocoder.geocodeAddressString(trimmed).compactMap(Self.place)
+                }
                 guard !Task.isCancelled, self.searchID == id else { return }
                 var ids = Set<String>()
-                self.searchResults = results.compactMap(Self.place).filter { ids.insert($0.id).inserted }
+                self.searchResults = places.filter { $0.isValid && ids.insert($0.id).inserted }
                 self.searchMessage = self.searchResults.isEmpty ? "No places found. Try a city with its state or country." : nil
                 self.isSearching = false
             } catch {
@@ -175,23 +193,9 @@ final class WeatherViewModel: ObservableObject {
     }
 
     func useLocation(_ location: CLLocation) {
-        cancelLocationLookup()
-        let id = locationID
-        locationTask = Task { [weak self] in
-            guard let self else { return }
-            let placemarks = try? await self.locationGeocoder.reverseGeocodeLocation(location)
-            guard !Task.isCancelled, self.locationID == id else { return }
-            let place = placemarks?.first.flatMap(Self.place) ?? Place(
-                name: "Current location", latitude: location.coordinate.latitude,
-                longitude: location.coordinate.longitude, timeZoneIdentifier: TimeZone.current.identifier)
-            self.select(place)
-        }
-    }
-
-    private func cancelLocationLookup() {
-        locationTask?.cancel()
-        locationGeocoder.cancelGeocode()
-        locationID = UUID()
+        // Forecasting must not wait for reverse geocoding, which can fail independently.
+        select(Place(name: "Current location", latitude: location.coordinate.latitude,
+                     longitude: location.coordinate.longitude, timeZoneIdentifier: TimeZone.current.identifier))
     }
 
     private static func place(_ placemark: CLPlacemark) -> Place? {
