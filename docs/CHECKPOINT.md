@@ -12,9 +12,17 @@ Live WeatherKit adapter and injectable provider; core forecast/place models; wea
 
 Local verification passed: all 13 Swift files parsed with tree-sitter-swift with zero syntax errors; the Xcode project parsed with pbxproj; entitlement plists and shared scheme XML parsed; source membership and generator idempotence checks passed; git diff whitespace validation passed. These are structural/syntax checks, not Swift type-checking or native execution.
 
-This Linux editing environment has no Swift toolchain, Xcode, simulator, Apple signing credentials, or authorized live WeatherKit access. The eleven core test methods and native UI tests are written but have not executed. Both native Release builds remain unverified.
+GitHub publication was explicitly approved on 2026-10-01. The branch was uploaded through the authorized GitHub connection because terminal Git authentication is unavailable. PR: https://github.com/jessedudgeon/WeatheriOS/pull/1.
 
-Automatic approval review rejected the branch push, requiring explicit permission to publish source to the public GitHub repository. The origin matches the user's WeatheriOS URL, and a read-only repository check confirmed admin/push permissions, but no retry was attempted. GitHub currently has no workflow runs. The implementation is committed locally on `codex/complete-weather-app`; the next step is user approval to push this branch and run its configured CI, then resolve any native build/test failures before merge.
+Native CI at commit `920a11f`, using Xcode 16.4 on macOS 15:
+- iOS Simulator Release build: passed.
+- macOS Release build: passed.
+- Swift core tests: all 11 passed, zero failures.
+- iPhone simulator UI tests: running at this checkpoint; consult PR checks for the latest result.
+
+Added the UserDefaults required-reason privacy manifest (`CA92.1`) to both application bundles after release review. Local resource-membership, plist, and generator-idempotence checks passed. The follow-up CI run must verify packaging. PR events now run branch CI once, while pushes to main retain post-merge checks.
+
+This editing environment has no Xcode, simulator, Apple signing credentials, or authorized live WeatherKit access. Simulator fixtures validate app flows without claiming live-provider acceptance. No App Store or TestFlight release has occurred.
 
 ## Remaining release gates
 

@@ -10,6 +10,8 @@ Native SwiftUI weather for iPhone, iPad, and Mac, using Apple WeatherKit. The or
 4. Enable **WeatherKit** for this App ID in Apple Developer → Certificates, Identifiers & Profiles, including the WeatherKit App Service. Refresh provisioning profiles in Xcode. Both targets already contain the WeatherKit entitlement; macOS also has network and location sandbox permissions.
 5. Build and run. Search a city or tap the location button. Save frequently used places using **Save this place** below the forecast.
 
+Both app bundles include a required-reason privacy manifest for their own UserDefaults storage (CA92.1).
+
 WeatherKit requires an appropriately provisioned Apple Developer account. There is no API key to paste into source code. Live WeatherKit requests will not succeed until signing and the App ID service are configured. Apple's setup guide: https://developer.apple.com/weatherkit/.
 
 Minimum OS versions: **iOS/iPadOS 16**, **macOS 13**. Existing app bundle identity and signing team were preserved.

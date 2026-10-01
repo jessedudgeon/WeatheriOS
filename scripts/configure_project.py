@@ -26,6 +26,18 @@ for path in ['Core/WeatherModels.swift', 'WeatherProvider.swift', 'LocationManag
         start = s.index(phase + ' /* Sources */ = {')
         pos = s.index('files = (', start) + len('files = (')
         s = s[:pos] + f'\n\t\t\t\t{build} /* {filename} in Sources */,' + s[pos:]
+# The privacy manifest must be bundled in both apps, not just present in the repo.
+resource = 'PrivacyInfo.xcprivacy'
+ref = ident(resource)
+if ref not in s:
+    s = s.replace('/* End PBXFileReference section */', f'\t\t{ref} /* {resource} */ = {{isa = PBXFileReference; lastKnownFileType = text.xml; path = "{resource}"; sourceTree = "<group>"; }};\n/* End PBXFileReference section */')
+    pos = s.index('children = (', s.index('CE421B37288B655700A2BD53 /* Shared */ = {')) + len('children = (')
+    s = s[:pos] + f'\n\t\t\t\t{ref} /* {resource} */,' + s[pos:]
+    for target, phase in [('ios', 'CE421B3D288B655800A2BD53'), ('mac', 'CE421B43288B655800A2BD53')]:
+        build = ident(resource + target)
+        s = s.replace('/* End PBXBuildFile section */', f'\t\t{build} /* {resource} in Resources */ = {{isa = PBXBuildFile; fileRef = {ref}; }};\n/* End PBXBuildFile section */')
+        pos = s.index('files = (', s.index(phase + ' /* Resources */ = {')) + len('files = (')
+        s = s[:pos] + f'\n\t\t\t\t{build} /* {resource} in Resources */,' + s[pos:]
 s = s.replace('IPHONEOS_DEPLOYMENT_TARGET = 15.5;', 'IPHONEOS_DEPLOYMENT_TARGET = 16.0;')
 s = s.replace('MACOSX_DEPLOYMENT_TARGET = 12.3;', 'MACOSX_DEPLOYMENT_TARGET = 13.0;')
 s = s.replace('MARKETING_VERSION = 1.0;', 'MARKETING_VERSION = 1.1;')

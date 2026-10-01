@@ -27,6 +27,8 @@
 		C6A51983B94E9247B2073732 /* WeatherViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50B6A2EC6772E3171E9D447; };
 		A452F6CE5F8FEC564448242B /* PreviewWeather.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AD8F966469001E85B151CB; };
 		D5A4E740C0C263B596422D84 /* PreviewWeather.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AD8F966469001E85B151CB; };
+		065AA8FFD5648FD54548A26A /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 26B2A637F7DC4079D5AB78A5; };
+		E6F454AC0848E1320AB47AC1 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 26B2A637F7DC4079D5AB78A5; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,6 +66,7 @@
 		B4F245FBF56BEF8C4E184936 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocationManager.swift"; sourceTree = "<group>"; };
 		A50B6A2EC6772E3171E9D447 /* WeatherViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WeatherViewModel.swift"; sourceTree = "<group>"; };
 		38AD8F966469001E85B151CB /* PreviewWeather.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PreviewWeather.swift"; sourceTree = "<group>"; };
+		26B2A637F7DC4079D5AB78A5 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "PrivacyInfo.xcprivacy"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,6 +115,7 @@
 		CE421B37288B655700A2BD53 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				26B2A637F7DC4079D5AB78A5 /* PrivacyInfo.xcprivacy */,
 				38AD8F966469001E85B151CB /* PreviewWeather.swift */,
 				A50B6A2EC6772E3171E9D447 /* WeatherViewModel.swift */,
 				B4F245FBF56BEF8C4E184936 /* LocationManager.swift */,
@@ -286,6 +290,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				065AA8FFD5648FD54548A26A /* PrivacyInfo.xcprivacy in Resources */,
 				CE421B64288B655800A2BD53 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -294,6 +299,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E6F454AC0848E1320AB47AC1 /* PrivacyInfo.xcprivacy in Resources */,
 				CE421B65288B655800A2BD53 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
