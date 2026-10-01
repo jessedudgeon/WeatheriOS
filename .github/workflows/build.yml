@@ -1,0 +1,53 @@
+name: Build and test Weather
+on:
+  push:
+    branches: [main, 'codex/**']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: weather-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  core:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - run: swift test
+  apple-builds:
+    runs-on: macos-15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - scheme: Weather-iOS
+            destination: generic/platform=iOS Simulator
+          - scheme: Weather-macOS
+            destination: platform=macOS
+    steps:
+      - uses: actions/checkout@v4
+      - run: xcodebuild -version
+      - name: Build release app
+        run: >-
+          xcodebuild -project Weather.xcodeproj -scheme '${{ matrix.scheme }}'
+          -configuration Release -destination '${{ matrix.destination }}'
+          CODE_SIGNING_ALLOWED=NO build
+  ios-ui:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select an installed iPhone simulator
+        run: |
+          DEVICE_ID=$(xcrun simctl list devices available -j | python3 -c 'import json,sys; d=json.load(sys.stdin); print(next(x["udid"] for k,v in d["devices"].items() if "iOS" in k for x in v if "iPhone" in x["name"]))')
+          echo "DEVICE_ID=$DEVICE_ID" >> "$GITHUB_ENV"
+      - name: Run deterministic UI tests
+        run: >-
+          xcodebuild -project Weather.xcodeproj -scheme Weather-iOS
+          -destination "platform=iOS Simulator,id=$DEVICE_ID"
+          -resultBundlePath TestResults.xcresult CODE_SIGNING_ALLOWED=NO test
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ios-test-results
+          path: TestResults.xcresult
