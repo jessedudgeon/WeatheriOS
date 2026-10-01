@@ -35,7 +35,11 @@ final class LocationManager: NSObject, ObservableObject, CLLocationManagerDelega
         }
     }
 
-    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+    nonisolated func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        Task { @MainActor [weak self] in self?.authorizationChanged() }
+    }
+
+    private func authorizationChanged() {
         guard isLocating else { return }
         switch manager.authorizationStatus {
         case .authorizedAlways, .authorizedWhenInUse: manager.requestLocation()
@@ -45,17 +49,21 @@ final class LocationManager: NSObject, ObservableObject, CLLocationManagerDelega
         }
     }
 
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        guard isLocating, let location = locations.last,
-              location.horizontalAccuracy >= 0,
-              abs(location.timestamp.timeIntervalSinceNow) < 300 else { return }
-        finish(message: nil)
-        onLocation?(location)
+    nonisolated func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        Task { @MainActor [weak self] in
+            guard let self, self.isLocating, let location = locations.last,
+                  location.horizontalAccuracy >= 0,
+                  abs(location.timestamp.timeIntervalSinceNow) < 300 else { return }
+            self.finish(message: nil)
+            self.onLocation?(location)
+        }
     }
 
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        guard isLocating else { return }
-        finish(message: "Couldn’t get your location. Try again or search for a city.")
+    nonisolated func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        Task { @MainActor [weak self] in
+            guard let self, self.isLocating else { return }
+            self.finish(message: "Couldn’t get your location. Try again or search for a city.")
+        }
     }
 
     func cancel() {
