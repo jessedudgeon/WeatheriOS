@@ -64,3 +64,7 @@ Solunar estimates use location/time zone, approximate moon phase/illumination, m
 Modules are explicitly deferred. The remote `codex/purchasable-modules` branch remains separate and is not included in this release. No store, purchases, or paywalls are introduced.
 
 Local Swift syntax and diff checks passed. Native iOS/macOS builds, core tests, and revised simulator UI coverage are pending PR CI; this Linux workspace has no Swift/Xcode. No App Store/TestFlight deployment or merge is claimed.
+
+### Native verification completed
+
+At implementation commit `039b3cd`, CI run https://github.com/jessedudgeon/WeatheriOS/actions/runs/37006702528 passed iOS and macOS Release builds, all 29 core tests, and the iPhone simulator suite (including inline map switching and solunar date selection). PR: https://github.com/jessedudgeon/WeatheriOS/pull/3. The follow-up checkpoint change is documentation only. Physical-device/visual acceptance and distribution remain separate release checks. PR remains unmerged; no App Store/TestFlight release occurred.
