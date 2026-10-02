@@ -35,7 +35,7 @@ struct FishingView: View {
                     }
                     ForEach(windows) { window in
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("\(time(window.start, format: "EEE h:mm a")) – \(time(window.end, format: "h:mm a"))")
+                            Text("\(time(window.start, format: "EEE h:mm a")) – \(time(window.end, format: "EEE h:mm a"))")
                                 .font(.headline).foregroundStyle(.teal)
                             Text("Wind up to \(units.wind(window.maxWind)) · Gusts \(units.wind(window.maxGust))")
                             Text("Rain chance up to \(Int((window.maxRainChance * 100).rounded()))%")
@@ -108,7 +108,7 @@ struct FishingView: View {
                             ForEach(forecast.upcomingHours(at: context.date).prefix(12)) { hour in
                                 VStack(spacing: 8) {
                                     Text(time(hour.date, format: "ha")).font(.caption)
-                                    Image(systemName: hour.symbol).symbolRenderingMode(.multicolor)
+                                    Image(systemName: hour.symbol).symbolRenderingMode(.hierarchical).foregroundStyle(.teal)
                                     Text(hour.precipitationChance, format: .percent.precision(.fractionLength(0))).font(.headline)
                                     if let amount = hour.precipitation {
                                         Text(units == .imperial ? String(format: "%.2f in", amount / 25.4) : String(format: "%.1f mm", amount))

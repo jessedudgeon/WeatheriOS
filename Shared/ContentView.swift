@@ -241,7 +241,7 @@ private struct ForecastDashboard: View {
                         ForEach(forecast.upcomingHours()) { hour in
                             VStack(spacing: 12) {
                                 Text(date(hour.date, format: "ha")).font(.caption)
-                                Image(systemName: hour.symbol).symbolRenderingMode(.multicolor).font(.title2)
+                                Image(systemName: hour.symbol).symbolRenderingMode(.hierarchical).foregroundStyle(.secondary).font(.title2)
                                     .accessibilityHidden(true)
                                 Text(units.temperature(hour.temperature)).font(.headline)
                                 Text(hour.precipitationChance, format: .percent.precision(.fractionLength(0)))
@@ -257,7 +257,7 @@ private struct ForecastDashboard: View {
                 ForEach(forecast.days.prefix(10)) { day in
                     HStack(spacing: 12) {
                         Text(date(day.date, format: "EEE d")).frame(minWidth: 64, alignment: .leading)
-                        Image(systemName: day.symbol).symbolRenderingMode(.multicolor).frame(width: 28)
+                        Image(systemName: day.symbol).symbolRenderingMode(.hierarchical).foregroundStyle(.secondary).frame(width: 28)
                             .accessibilityHidden(true)
                         Text(day.precipitationChance, format: .percent.precision(.fractionLength(0)))
                             .font(.caption).foregroundStyle(.blue)

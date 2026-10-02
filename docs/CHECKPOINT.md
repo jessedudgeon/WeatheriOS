@@ -37,3 +37,9 @@ Location fixes: permission-prompt time is excluded from the fix timeout, transie
 Added Maps (Windy ECMWF precipitation forecast and surface wind) and Fishing (wind/gust and pressure charts, sunrise/sunset, rain, air temperature, and transparent daylight weather-window filters). No live-radar, water-temperature, tide, lake-level, or fish-activity claims are made.
 
 At `6a13ee0`, both Release builds and all 21 core tests passed. The Debug UI build exposed an over-complex fixture expression; the fixture was broken into typed local arrays. The next CI run must confirm Debug compilation, real Open-Meteo loading in the simulator, and Maps/Fishing navigation. Prior baseline CI `628ab78` had all four jobs green, including simulator UI tests. See PR #1 checks for current status.
+
+## Verified acceptance — October 1, 2026 (Indianapolis)
+
+CI run https://github.com/jessedudgeon/WeatheriOS/actions/runs/36944008363 at `b2eb2f4` passed both native Release builds, all 21 core tests, and all 10 iPhone simulator UI executions. The UI suite confirmed a real no-key Open-Meteo forecast, native location permission/coordinate delivery, denied-location search recovery, Maps/Fishing navigation, saved-data deletion, and first-launch behavior. Live search returned Berne, Indiana, and both Windy map endpoints returned HTTP 200.
+
+Retrieved and inspected CI screenshots of the live forecast and fishing briefing. Adjusted hourly/daily cloud-symbol contrast in light mode and added the end weekday to fishing-window labels. Physical-device positioning, map interaction, landscape/dynamic-type review, final app icons, and distribution signing remain release checks. No claim of App Store/TestFlight release.
