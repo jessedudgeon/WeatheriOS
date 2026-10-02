@@ -27,3 +27,13 @@ This editing environment has no Xcode, simulator, Apple signing credentials, or 
 ## Remaining release gates
 
 Configure Apple Developer WeatherKit service/provisioning, verify real forecasts and location permissions on devices, supply release icon assets, finish manual accessibility/device QA, and archive/TestFlight/App Store submission. See RELEASE.md for concrete checks. No store release has occurred.
+
+## Live-data correction, Maps and Fishing
+
+User reported the app launched but could not load weather or location. WeatherKit provisioning was a dependency in the original path; Open-Meteo is now the default no-key provider, and WeatherKit is opt-in. Default entitlements no longer require WeatherKit. Forecast API returned a real Berne response with 240 hourly samples and 10 daily samples during development. City search also has an Open-Meteo/GeoNames path.
+
+Location fixes: permission-prompt time is excluded from the fix timeout, transient locationUnknown errors keep listening, usable coordinates immediately trigger weather without waiting for reverse geocoding, and platform-specific recovery/settings guidance is displayed. Actual device OS permissions and hardware fixes still need on-device confirmation.
+
+Added Maps (Windy ECMWF precipitation forecast and surface wind) and Fishing (wind/gust and pressure charts, sunrise/sunset, rain, air temperature, and transparent daylight weather-window filters). No live-radar, water-temperature, tide, lake-level, or fish-activity claims are made.
+
+At `6a13ee0`, both Release builds and all 21 core tests passed. The Debug UI build exposed an over-complex fixture expression; the fixture was broken into typed local arrays. The next CI run must confirm Debug compilation, real Open-Meteo loading in the simulator, and Maps/Fishing navigation. Prior baseline CI `628ab78` had all four jobs green, including simulator UI tests. See PR #1 checks for current status.

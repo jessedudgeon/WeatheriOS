@@ -124,7 +124,7 @@ struct FishingView: View {
                     .font(.caption).foregroundStyle(.secondary)
                 Text("Water temperature, lake level, tides, and species-specific bite activity are not available in this weather feed. Check local water conditions and fishing regulations before heading out.")
                     .font(.footnote).foregroundStyle(.secondary)
-                Link("Weather source & attribution", destination: forecast.attributionURL).font(.caption)
+                ForecastAttribution(forecast: forecast)
             }
         }
     }

@@ -1,10 +1,13 @@
 # Release checklist
 
-## Apple account and live data
+## Live data and location
 
 - [ ] Select the owning Apple Developer team and confirm the existing bundle ID is registered.
-- [ ] Enable WeatherKit capability AND its App Service for the identifier; regenerate provisioning.
-- [ ] Build on a physical iPhone and verify real weather and legal attribution load.
+- [ ] Open-Meteo is the default: verify no-key forecast loading. Review provider terms before commercial distribution.
+- [ ] Only if using Apple Weather: enable WeatherKit capability AND its App Service for the identifier; regenerate provisioning.
+- [ ] Build on a physical iPhone and verify Open-Meteo weather and attribution load.
+- [ ] Verify precipitation/wind map layers, forecast timeline, retry, and browser fallback.
+- [ ] Verify fishing charts, daylight windows, and stale-data behavior; do not label these as bite or safety predictions.
 - [ ] Verify location Allow Once, While Using, denied, disabled Location Services, and timeout paths.
 - [ ] Search Berne, London, and a city across the date line; verify destination-local forecast times.
 - [ ] Save/relaunch/remove cities; change units; delete stored data; verify no old place returns.

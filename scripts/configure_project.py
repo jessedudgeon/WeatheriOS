@@ -54,7 +54,7 @@ for config in ['CE421B69288B655800A2BD53','CE421B6A288B655800A2BD53','CE421B6C28
             extra += '\n\t\t\t\tCODE_SIGN_ENTITLEMENTS = Shared/Weather.entitlements;'
         s = s[:pos] + extra + s[pos:]
 project.write_text(s)
-for path, values in [('Shared/Weather.entitlements', {'com.apple.developer.weatherkit': True}), ('macOS/macOS.entitlements', {'com.apple.security.app-sandbox': True, 'com.apple.security.network.client': True, 'com.apple.security.personal-information.location': True, 'com.apple.developer.weatherkit': True})]:
+for path, values in [('Shared/Weather.entitlements', {}), ('macOS/macOS.entitlements', {'com.apple.security.app-sandbox': True, 'com.apple.security.network.client': True, 'com.apple.security.personal-information.location': True})]:
     (root/path).write_bytes(plistlib.dumps(values))
 for platform, app, test in [('iOS','CE421B3E288B655800A2BD53','CE421B4B288B655800A2BD53'),('macOS','CE421B44288B655800A2BD53','CE421B57288B655800A2BD53')]:
     def reference(id, name, product):
