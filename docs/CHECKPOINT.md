@@ -54,3 +54,17 @@ Confirmed the final previous revision `68fffff` passed all four CI jobs in run 3
 - Added three regression tests for sunset clipping, minimum duration, and the 24-hour boundary.
 
 Local diff checks passed; this Linux session has no Swift/Xcode. Native builds and automated tests for this follow-up must be checked in PR CI. Physical-device acceptance, final icons, and signing/distribution remain outstanding.
+
+## Unified dashboard and solunar calendar — October 2, 2026
+
+Based on merged main `1623616`. Forecast, inline precipitation/wind maps, seven-day solunar calendar, and fishing weather now share one scrolling dashboard. Removed the top-level Forecast/Maps/Fishing picker and repeated fishing metrics/rain/attribution. Map loading remains explicit to preserve third-party privacy; saved-place action is near the top. Search/location/settings remain in the toolbar; iOS supports pull-to-refresh.
+
+Solunar estimates use location/time zone, approximate moon phase/illumination, moonrise/set, and upper/lower transits. Astronomy runs locally even if weather is unavailable. Major/minor windows and cross-midnight behavior are labeled, with BSD attribution available in-app. Added regression tests for reference values, DST, polar missing events, date line, invalid input, and window lengths. See SOLUNAR.md.
+
+Modules are explicitly deferred. The remote `codex/purchasable-modules` branch remains separate and is not included in this release. No store, purchases, or paywalls are introduced.
+
+Local Swift syntax and diff checks passed. Native iOS/macOS builds, core tests, and revised simulator UI coverage are pending PR CI; this Linux workspace has no Swift/Xcode. No App Store/TestFlight deployment or merge is claimed.
+
+### Native verification completed
+
+At implementation commit `039b3cd`, CI run https://github.com/jessedudgeon/WeatheriOS/actions/runs/37006702528 passed iOS and macOS Release builds, all 29 core tests, and the iPhone simulator suite (including inline map switching and solunar date selection). PR: https://github.com/jessedudgeon/WeatheriOS/pull/3. The follow-up checkpoint change is documentation only. Physical-device/visual acceptance and distribution remain separate release checks. PR remains unmerged; no App Store/TestFlight release occurred.

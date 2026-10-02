@@ -10,16 +10,8 @@ struct FishingView: View {
     var body: some View {
         TimelineView(.periodic(from: .now, by: 60)) { context in
             VStack(alignment: .leading, spacing: 20) {
-                VStack(alignment: .leading, spacing: 12) {
-                    Label("ON THE WATER", systemImage: "fish.fill").font(.caption.bold()).tracking(2)
-                    Text("Plan your next cast.").font(.largeTitle.bold())
-                    Text(forecast.place.name).font(.headline)
-                    Text("A weather briefing for your fishing trip.").foregroundStyle(.white.opacity(0.8))
-                }.padding(24).frame(maxWidth: .infinity, alignment: .leading)
-                    .foregroundStyle(.white)
-                    .background(LinearGradient(colors: [Color(red: 0.03, green: 0.24, blue: 0.24), Color(red: 0.07, green: 0.42, blue: 0.40)], startPoint: .topLeading, endPoint: .bottomTrailing), in: RoundedRectangle(cornerRadius: 24))
-                    .accessibilityIdentifier("fishingHeader")
-
+                Label("Fishing weather", systemImage: "fish.fill")
+                    .font(.title2.bold()).accessibilityIdentifier("fishingHeader")
                 if isCached || forecast.isStale(at: context.date) {
                     Label("Saved weather — refresh before planning your trip.", systemImage: "clock.arrow.circlepath")
                         .foregroundStyle(.orange)
@@ -46,14 +38,8 @@ struct FishingView: View {
                         .font(.caption).foregroundStyle(.secondary)
                 }
 
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: 150), spacing: 14)], spacing: 14) {
-                    fact("Wind", value: units.wind(forecast.windSpeed), detail: forecast.windDirection.map { "From \(FishingOutlook.compass($0))" } ?? "Direction unavailable", symbol: "wind")
-                    fact("Gusts", value: forecast.windGust.map(units.wind) ?? "Unavailable", detail: "Forecast gust speed", symbol: "wind.circle")
-                    fact("Air pressure", value: forecast.pressure.map { String(format: "%.1f hPa", $0) } ?? "Unavailable", detail: pressureTrend(at: context.date), symbol: "barometer")
-                    fact("Air temperature", value: units.temperature(forecast.temperature), detail: "Not water temperature", symbol: "thermometer.medium")
-                    fact("Sunrise", value: forecast.days.first?.sunrise.map { time($0) } ?? "Unavailable", detail: "Local to this place", symbol: "sunrise.fill")
-                    fact("Sunset", value: forecast.days.first?.sunset.map { time($0) } ?? "Unavailable", detail: "Local to this place", symbol: "sunset.fill")
-                }
+                Text("Pressure: \(pressureTrend(at: context.date))")
+                    .font(.subheadline).foregroundStyle(.secondary)
 
                 section("Wind & gusts · next 24 hours", symbol: "wind") {
                     let hours = forecast.upcomingHours(at: context.date).filter { $0.windSpeed != nil }
@@ -102,29 +88,8 @@ struct FishingView: View {
                         .font(.caption).foregroundStyle(.secondary)
                 }
 
-                section("Rain at a glance", symbol: "cloud.rain") {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 22) {
-                            ForEach(forecast.upcomingHours(at: context.date).prefix(12)) { hour in
-                                VStack(spacing: 8) {
-                                    Text(time(hour.date, format: "ha")).font(.caption)
-                                    Image(systemName: hour.symbol).symbolRenderingMode(.hierarchical).foregroundStyle(.teal)
-                                    Text(hour.precipitationChance, format: .percent.precision(.fractionLength(0))).font(.headline)
-                                    if let amount = hour.precipitation {
-                                        Text(units == .imperial ? String(format: "%.2f in", amount / 25.4) : String(format: "%.1f mm", amount))
-                                            .font(.caption).foregroundStyle(.secondary)
-                                    }
-                                }.accessibilityElement(children: .combine)
-                            }
-                        }
-                    }
-                }
-
-                Text("Weather: \(forecast.sourceName ?? "Apple Weather") · Updated \(time(forecast.fetchedAt, format: "MMM d, h:mm a")) · \(forecast.place.timeZoneIdentifier)")
-                    .font(.caption).foregroundStyle(.secondary)
                 Text("Water temperature, lake level, tides, and species-specific bite activity are not available in this weather feed. Check local water conditions and fishing regulations before heading out.")
                     .font(.footnote).foregroundStyle(.secondary)
-                ForecastAttribution(forecast: forecast)
             }
         }
     }
@@ -148,11 +113,5 @@ struct FishingView: View {
             content()
         }.padding(18).frame(maxWidth: .infinity, alignment: .leading)
             .background(.background, in: RoundedRectangle(cornerRadius: 20))
-    }
-    private func fact(_ title: String, value: String, detail: String, symbol: String) -> some View {
-        section(title, symbol: symbol) {
-            Text(value).font(.title2.weight(.medium)).minimumScaleFactor(0.7).lineLimit(1)
-            Text(detail).font(.caption).foregroundStyle(.secondary)
-        }
     }
 }

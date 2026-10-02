@@ -42,21 +42,39 @@ final class Tests_iOS: XCTestCase {
         add(attachment)
     }
 
-    func testFishingAndMapNavigation() {
+    func testUnifiedDashboardMapsAndSolunarCalendar() {
         let app = XCUIApplication()
         app.launchArguments = ["--ui-testing"]
         app.launch()
         XCTAssertTrue(app.staticTexts["forecastPlace"].waitForExistence(timeout: 10))
-        app.segmentedControls["weatherSection"].buttons["Fishing"].tap()
-        XCTAssertTrue(app.otherElements["fishingHeader"].waitForExistence(timeout: 5) || app.staticTexts["Plan your next cast."].exists)
+        XCTAssertFalse(app.segmentedControls["weatherSection"].exists)
+        let loadMap = app.buttons["loadWeatherMap"]
+        for _ in 0..<16 {
+            if loadMap.isHittable { break }
+            app.swipeUp()
+        }
+        XCTAssertTrue(loadMap.isHittable)
+        loadMap.tap()
+        let wind = app.segmentedControls["mapLayerPicker"].buttons["Wind"]
+        if !wind.isHittable { app.swipeUp() }
+        XCTAssertTrue(wind.isHittable)
+        wind.tap()
+        XCTAssertTrue(app.webViews.firstMatch.waitForExistence(timeout: 10))
+        // Swipe along the edge so the embedded interactive map does not consume scrolling.
+        let tomorrow = app.buttons["solunarDay1"]
+        for _ in 0..<16 {
+            if tomorrow.isHittable { break }
+            app.coordinate(withNormalizedOffset: CGVector(dx: 0.02, dy: 0.8))
+                .press(forDuration: 0.05, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.02, dy: 0.3)))
+        }
+        XCTAssertTrue(tomorrow.isHittable)
+        tomorrow.tap()
+        XCTAssertTrue(tomorrow.isSelected)
+        XCTAssertTrue(app.staticTexts["moonPhase"].exists)
         let attachment = XCTAttachment(screenshot: app.screenshot())
-        attachment.name = "Fishing briefing"
+        attachment.name = "Unified dashboard solunar calendar"
         attachment.lifetime = .keepAlways
         add(attachment)
-        app.segmentedControls["weatherSection"].buttons["Maps"].tap()
-        XCTAssertTrue(app.staticTexts["weatherMapHeader"].waitForExistence(timeout: 5))
-        app.segmentedControls["mapLayerPicker"].buttons["Wind"].tap()
-        XCTAssertTrue(app.webViews.firstMatch.waitForExistence(timeout: 10))
     }
 
     func testFirstLaunchOffersSearchWithoutLocationPermission() {
@@ -74,7 +92,7 @@ final class Tests_iOS: XCTestCase {
         app.launch()
         XCTAssertTrue(app.staticTexts["forecastPlace"].waitForExistence(timeout: 10))
         XCTAssertEqual(app.staticTexts["currentTemperature"].label, "68°")
-        // Save is below the dashboard, so reach it by scrolling.
+        // Save remains directly available near the top of the dashboard.
         let save = app.buttons["savePlace"]
         for _ in 0..<12 {
             if save.isHittable { break }

@@ -6,7 +6,6 @@ struct ContentView: View {
     @Environment(\.scenePhase) private var scenePhase
     @State private var showSearch = false
     @State private var showSettings = false
-    @State private var section = "Forecast"
     @Environment(\.openURL) private var openURL
 
     var body: some View {
@@ -14,13 +13,6 @@ struct ContentView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 22) {
                     if !model.savedPlaces.isEmpty { savedPlaces }
-                    if model.selectedPlace != nil {
-                        Picker("View", selection: $section) {
-                            Text("Forecast").tag("Forecast")
-                            Text("Maps").tag("Maps")
-                            Text("Fishing").tag("Fishing")
-                        }.pickerStyle(.segmented).accessibilityIdentifier("weatherSection")
-                    }
                     if let message = location.message {
                         notice(message, symbol: "location.slash")
                         HStack {
@@ -29,17 +21,16 @@ struct ContentView: View {
                         }.buttonStyle(.bordered)
                     }
                     if let message = model.message { notice(message, symbol: "wifi.exclamationmark") }
-                    if section == "Maps", let place = model.selectedPlace {
-                        WeatherMapView(place: place, units: model.units)
-                    } else if let forecast = model.forecast {
+                    if let place = model.selectedPlace, !model.isSaved(place) {
+                        Button { model.saveSelected() } label: {
+                            Label("Save this place", systemImage: "star")
+                        }.buttonStyle(.bordered).accessibilityIdentifier("savePlace")
+                    }
+                    if let forecast = model.forecast {
                         TimelineView(.periodic(from: .now, by: 60)) { context in
                             if forecast.canUseOffline(at: context.date) {
-                                if section == "Fishing" {
-                                    FishingView(forecast: forecast, units: model.units, isCached: model.isCached)
-                                } else {
-                                    ForecastDashboard(forecast: forecast, units: model.units,
-                                                      playful: model.playful, isCached: model.isCached)
-                                }
+                                ForecastDashboard(forecast: forecast, units: model.units,
+                                                  playful: model.playful, isCached: model.isCached)
                             } else {
                                 VStack(alignment: .leading, spacing: 12) {
                                     Text("This saved forecast has expired.").font(.headline)
@@ -48,11 +39,6 @@ struct ContentView: View {
                                         .buttonStyle(.borderedProminent).disabled(model.isLoading)
                                 }.padding(.vertical, 40)
                             }
-                        }
-                        if let place = model.selectedPlace, !model.isSaved(place) {
-                            Button { model.saveSelected() } label: {
-                                Label("Save this place", systemImage: "star")
-                            }.buttonStyle(.bordered).accessibilityIdentifier("savePlace")
                         }
                     } else if model.isLoading {
                         VStack(spacing: 16) {
@@ -68,6 +54,13 @@ struct ContentView: View {
                         }.frame(maxWidth: .infinity, minHeight: 300)
                     } else {
                         welcome
+                    }
+                    if let place = model.selectedPlace {
+                        WeatherMapView(place: place, units: model.units)
+                        SolunarCalendarView(place: place)
+                    }
+                    if let forecast = model.forecast, forecast.canUseOffline() {
+                        FishingView(forecast: forecast, units: model.units, isCached: model.isCached)
                     }
                 }
                 .padding(20)
@@ -87,9 +80,6 @@ struct ContentView: View {
                     Button { showSearch = true } label: {
                         Label("Search cities", systemImage: "magnifyingglass")
                     }.accessibilityIdentifier("searchCities")
-                    Button { model.refresh() } label: {
-                        Label("Refresh weather", systemImage: "arrow.clockwise")
-                    }.disabled(model.selectedPlace == nil || model.isLoading)
                     Button { showSettings = true } label: {
                         Label("Settings", systemImage: "gearshape")
                     }.accessibilityIdentifier("settings")
