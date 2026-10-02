@@ -87,4 +87,6 @@ for platform, app, test in [('iOS','CE421B3E288B655800A2BD53','CE421B4B288B65580
 # Opt-in local-commerce scheme; ordinary Run schemes never select test products.
 ios_scheme = root/'Weather.xcodeproj/xcshareddata/xcschemes/Weather-iOS.xcscheme'
 store_scheme = ios_scheme.read_text().replace('</LaunchAction>', '<StoreKitConfigurationFileReference identifier="../../WeatherModules.storekit"/></LaunchAction>')
+import re
+store_scheme = re.sub(r'<Testables>.*?</Testables>', '<TestPlans><TestPlanReference reference="container:WeatherStoreKit.xctestplan" default="YES"/></TestPlans>', store_scheme)
 (root/'Weather.xcodeproj/xcshareddata/xcschemes/Weather-StoreKit.xcscheme').write_text(store_scheme)

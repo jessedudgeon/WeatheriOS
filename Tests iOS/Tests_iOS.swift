@@ -76,7 +76,13 @@ final class Tests_iOS: XCTestCase {
         let enabled = XCTNSPredicateExpectation(predicate: NSPredicate(format: "enabled == true"), object: buy)
         XCTAssertEqual(XCTWaiter.wait(for: [enabled], timeout: 30), .completed)
         buy.tap()
-        XCTAssertTrue(app.buttons["openModule_fishing"].waitForExistence(timeout: 30))
+        let unlocked = app.buttons["openModule_fishing"].waitForExistence(timeout: 30)
+        if !unlocked {
+            print("StoreKit transaction count: \(session.allTransactions().count)")
+            print(XCUIApplication(bundleIdentifier: "com.apple.springboard").debugDescription)
+            print(app.debugDescription)
+        }
+        XCTAssertTrue(unlocked)
         app.terminate()
         app.launch()
         app.segmentedControls["weatherSection"].buttons["Fishing"].tap()

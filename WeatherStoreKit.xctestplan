@@ -1,0 +1,25 @@
+{
+  "configurations": [
+    {
+      "id": "B3A8C302-A610-44DE-B416-FF2CDF541612",
+      "name": "Local StoreKit",
+      "options": {}
+    }
+  ],
+  "defaultOptions": {
+    "storeKitConfiguration": {
+      "_containerPath": "container:Weather.xcodeproj",
+      "_path": "WeatherModules.storekit"
+    }
+  },
+  "testTargets": [
+    {
+      "target": {
+        "containerPath": "container:Weather.xcodeproj",
+        "identifier": "CE421B4B288B655800A2BD53",
+        "name": "Tests iOS"
+      }
+    }
+  ],
+  "version": 1
+}
