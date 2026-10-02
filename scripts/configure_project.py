@@ -10,7 +10,7 @@ s = project.read_text()
 def ident(text):
     return hashlib.sha1(text.encode()).hexdigest()[:24].upper()
 
-for path in ['Core/WeatherModels.swift', 'WeatherProvider.swift', 'LocationManager.swift', 'WeatherViewModel.swift', 'PreviewWeather.swift', 'Core/OpenMeteoResponse.swift', 'Core/FishingOutlook.swift', 'OpenMeteoProvider.swift', 'FishingView.swift', 'WeatherMapView.swift']:
+for path in ['Core/WeatherModels.swift', 'WeatherProvider.swift', 'LocationManager.swift', 'WeatherViewModel.swift', 'PreviewWeather.swift', 'Core/OpenMeteoResponse.swift', 'Core/FishingOutlook.swift', 'Core/SolunarCalendar.swift', 'SolunarCalendarView.swift', 'OpenMeteoProvider.swift', 'FishingView.swift', 'WeatherMapView.swift']:
     ref = ident(path)
     if ref in s:
         continue

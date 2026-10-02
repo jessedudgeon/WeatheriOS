@@ -4,6 +4,7 @@ import WebKit
 struct WeatherMapView: View {
     let place: Place
     let units: WeatherUnits
+    @State private var showMap = false
     @State private var layer: WeatherMapLayer = .precipitation
     @State private var loading = true
     @State private var error: String?
@@ -12,43 +13,50 @@ struct WeatherMapView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Weather in motion").font(.title.bold()).accessibilityIdentifier("weatherMapHeader")
-            Text(place.name).foregroundStyle(.secondary)
-            Picker("Map layer", selection: $layer) {
-                ForEach(WeatherMapLayer.allCases) { Text($0.title).tag($0) }
-            }.pickerStyle(.segmented).accessibilityIdentifier("mapLayerPicker")
-            Text(layer == .precipitation
-                 ? "Precipitation forecast · ECMWF. Use the timeline to explore forecast rain and snow. This is a forecast layer, not live radar."
-                 : "Surface wind forecast · ECMWF. Use the timeline to explore wind direction and speed.")
-                .font(.callout).foregroundStyle(.secondary)
-            ZStack(alignment: .top) {
-                WeatherWebMap(url: url, loading: $loading, error: $error)
-                    .id(url.absoluteString + reload.uuidString)
-                    .frame(height: 520)
-                if loading {
-                    ProgressView("Loading map…").padding(12).background(.regularMaterial, in: Capsule()).padding()
+            Text("Weather maps").font(.title2.bold()).accessibilityIdentifier("weatherMapHeader")
+            if showMap {
+                Picker("Map layer", selection: $layer) {
+                    ForEach(WeatherMapLayer.allCases) { Text($0.title).tag($0) }
+                }.pickerStyle(.segmented).accessibilityIdentifier("mapLayerPicker")
+                Text(layer == .precipitation
+                     ? "Precipitation forecast · ECMWF. Use the timeline to explore forecast rain and snow. This is a forecast layer, not live radar."
+                     : "Surface wind forecast · ECMWF. Use the timeline to explore wind direction and speed.")
+                    .font(.callout).foregroundStyle(.secondary)
+                ZStack(alignment: .top) {
+                    WeatherWebMap(url: url, loading: $loading, error: $error)
+                        .id(url.absoluteString + reload.uuidString)
+                        .frame(height: 360)
+                    if loading {
+                        ProgressView("Loading map…").padding(12).background(.regularMaterial, in: Capsule()).padding()
+                    }
+                    if let error {
+                        VStack(spacing: 12) {
+                            Text(error).multilineTextAlignment(.center)
+                            Button("Retry map") { self.error = nil; loading = true; reload = UUID() }
+                                .buttonStyle(.borderedProminent)
+                            Link("Open map in browser", destination: url)
+                        }.padding().frame(maxWidth: .infinity).background(.regularMaterial)
+                    }
+                }.clipShape(RoundedRectangle(cornerRadius: 20))
+                HStack {
+                    Link("Open full map", destination: url)
+                    Spacer()
+                    Button { error = nil; loading = true; reload = UUID() } label: { Label("Reload", systemImage: "arrow.clockwise") }
                 }
-                if let error {
-                    VStack(spacing: 12) {
-                        Text(error).multilineTextAlignment(.center)
-                        Button("Retry map") { self.error = nil; loading = true; reload = UUID() }
-                            .buttonStyle(.borderedProminent)
-                        Link("Open map in browser", destination: url)
-                    }.padding().frame(maxWidth: .infinity).background(.regularMaterial)
-                }
-            }.clipShape(RoundedRectangle(cornerRadius: 20))
-            HStack {
-                Link("Open full map", destination: url)
-                Spacer()
-                Button { error = nil; loading = true; reload = UUID() } label: { Label("Reload", systemImage: "arrow.clockwise") }
+            } else {
+                Button { showMap = true } label: {
+                    Label("Load precipitation & wind map", systemImage: "map")
+                        .frame(maxWidth: .infinity, minHeight: 90)
+                }.buttonStyle(.bordered).accessibilityIdentifier("loadWeatherMap")
             }
-            Text("Map and forecast layers by Windy.com / ECMWF; base-map credit is shown on the map. Opening Maps sends this place’s coordinates to Windy. Map forecasts can differ from the selected weather provider.")
+            Text("Map and forecast layers by Windy.com / ECMWF; base-map credit is shown on the map. Loading the map sends this place’s coordinates to Windy. Map forecasts can differ from the selected weather provider.")
                 .font(.caption).foregroundStyle(.secondary)
         }
         .onChange(of: url) { _ in loading = true; error = nil }
-        .task(id: url.absoluteString + reload.uuidString) {
+        .task(id: url.absoluteString + reload.uuidString + String(showMap)) {
+            guard showMap else { return }
             try? await Task.sleep(nanoseconds: 25_000_000_000)
-            guard !Task.isCancelled, loading else { return }
+            guard !Task.isCancelled, showMap, loading else { return }
             loading = false
             error = "The map is taking too long. Check your connection or open it in your browser."
         }

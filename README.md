@@ -20,13 +20,17 @@ Minimum OS versions: iOS/iPadOS 16 and macOS 13. The original bundle ID is prese
 - Location runs only after a button press. The app waits up to 25 seconds after permission is granted, tolerates temporary `locationUnknown` errors, stops after a usable fix, and provides an actionable error. Forecast fetching starts immediately from coordinates and does not wait for reverse geocoding.
 - Search remains usable when location permission is denied. Open-Meteo/GeoNames search is tried first, with Apple geocoding as a fallback for addresses/postal codes.
 
-## Forecast, Maps, Fishing
+## One weather dashboard
+
+Weather, maps, the solunar calendar, and fishing weather share one scrolling screen. Search, current location, and settings stay in the toolbar. Pull to refresh on iOS. Paid modules, module browsing, and purchases are deferred to a future patch.
 
 **Forecast:** current/modelled conditions, hourly outlook, 10-day forecast, precipitation probability, wind, humidity, UV, sunrise/sunset, saved places, unit settings, and optional playful copy. Open-Meteo's daily maximum UV is explicitly labeled. Forecast timestamps use the destination time zone.
 
-**Maps:** interactive Windy/ECMWF precipitation and surface-wind layers centered on the selected place, with a forecast timeline, unit selection, provider attribution, retry, and browser fallback. Precipitation is a forecast layer, not live radar. Opening the Maps view loads Windy's embedded map and sends it the selected coordinates.
+**Maps:** interactive Windy/ECMWF precipitation and surface-wind layers centered on the selected place, with a forecast timeline, unit selection, provider attribution, retry, and browser fallback. Precipitation is a forecast layer, not live radar. Tapping the inline Load map button loads Windy's embedded map and sends it the selected coordinates.
 
-**Fishing:** wind/gust and pressure charts, wind direction, local sunrise/sunset, air temperature, rain probability/amount, and upcoming calmer/drier daylight windows. Windows require at least two contiguous forecast hours with wind <20 km/h, gusts <30 km/h, rain chance <30%, daylight, and no forecast thunderstorm symbol/code. Missing data does not count as calm/dry, and stale/cached forecasts do not produce trip suggestions. These are transparent planning filters, not a bite prediction or a boating-safety determination. Water temperature, lake levels, tides, and species-specific activity are not supplied by these weather APIs.
+**Solunar calendar:** seven local dates, approximate moon phase/illumination, major periods around upper/lower moon transits, and minor periods around moonrise/moonset. Calculated offline using SunCalc 1.9.0 astronomy formulas; estimates are not a catch forecast. See [method and limitations](docs/SOLUNAR.md).
+
+**Fishing:** wind/gust and pressure charts, pressure trend, and upcoming calmer/drier daylight windows. Windows require at least two contiguous forecast hours with wind <20 km/h, gusts <30 km/h, rain chance <30%, daylight, and no forecast thunderstorm symbol/code. Missing data does not count as calm/dry, and stale/cached forecasts do not produce trip suggestions. These are transparent planning filters, not a bite prediction or a boating-safety determination. Water temperature, lake levels, tides, and species-specific activity are not supplied by these weather APIs.
 
 Offline forecasts remain labeled as saved; data older than 24 hours is not displayed. Settings can remove individual places or all stored places/forecasts. No accounts, app analytics, ads, or background location tracking.
 
@@ -46,6 +50,6 @@ xcodebuild -project Weather.xcodeproj -scheme Weather-macOS \
   -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO build
 ```
 
-Choose an installed simulator using `xcrun simctl list devices available`. CI selects one automatically. Core tests cover persistence, cache expiry, units, live-response decoding, incomplete API responses, map URLs, fishing filters, and pressure trends. UI tests cover first launch, saved-data deletion, Maps/Fishing navigation, and a real Open-Meteo forecast without WeatherKit credentials. Fixture-only tests use `--ui-testing`; the explicit live test uses `--live-weather-test`. Both launch hooks exist only in Debug builds.
+Choose an installed simulator using `xcrun simctl list devices available`. CI selects one automatically. Core tests cover persistence, cache expiry, units, live-response decoding, incomplete API responses, map URLs, fishing filters, and pressure trends. UI tests cover first launch, saved-data deletion, inline maps and solunar day selection, and a real Open-Meteo forecast without WeatherKit credentials. Fixture-only tests use `--ui-testing`; the explicit live test uses `--live-weather-test`. Both launch hooks exist only in Debug builds.
 
 See [checkpoint](docs/CHECKPOINT.md), [release checklist](docs/RELEASE.md), and [privacy](docs/PRIVACY.md).
