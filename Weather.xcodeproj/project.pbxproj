@@ -39,6 +39,13 @@
 		E886C29174074C8AAF49EC38 /* FishingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53257E6A5D86A263CDADD10F; };
 		53124B277738743EB71E6377 /* WeatherMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FEE86130377FF4F576758E1; };
 		65520BF7A3C92AF5BFF25D51 /* WeatherMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FEE86130377FF4F576758E1; };
+		E55163F1B95C66D8C58EFC1B /* WeatherModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B2C97D6EA604B712F9C1C5B; };
+		2C94D39CD81DD346F0936779 /* WeatherModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B2C97D6EA604B712F9C1C5B; };
+		F02109FDD00E1F1A37DA9016 /* ModuleStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53400DF7C1EF7F8C60F7B8AC; };
+		ACB7C4E896F54D6E08F7F890 /* ModuleStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53400DF7C1EF7F8C60F7B8AC; };
+		9DA8101114640D2F6CC18569 /* ModuleViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF6E314B8435608332CF6B80; };
+		B16B7150C9DDBA76A07F38CC /* ModuleViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF6E314B8435608332CF6B80; };
+		F43D2A602DD29A9112026C45 /* WeatherModules.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 2FED4E016CF40F274CECC841; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -82,6 +89,10 @@
 		FCD221C185EBF3AFA800A548 /* OpenMeteoProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OpenMeteoProvider.swift"; sourceTree = "<group>"; };
 		53257E6A5D86A263CDADD10F /* FishingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FishingView.swift"; sourceTree = "<group>"; };
 		2FEE86130377FF4F576758E1 /* WeatherMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WeatherMapView.swift"; sourceTree = "<group>"; };
+		5B2C97D6EA604B712F9C1C5B /* WeatherModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Core/WeatherModule.swift"; sourceTree = "<group>"; };
+		53400DF7C1EF7F8C60F7B8AC /* ModuleStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModuleStore.swift"; sourceTree = "<group>"; };
+		DF6E314B8435608332CF6B80 /* ModuleViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModuleViews.swift"; sourceTree = "<group>"; };
+		2FED4E016CF40F274CECC841 /* WeatherModules.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = "WeatherModules.storekit"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -130,6 +141,9 @@
 		CE421B37288B655700A2BD53 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				DF6E314B8435608332CF6B80 /* ModuleViews.swift */,
+				53400DF7C1EF7F8C60F7B8AC /* ModuleStore.swift */,
+				5B2C97D6EA604B712F9C1C5B /* WeatherModule.swift */,
 				2FEE86130377FF4F576758E1 /* WeatherMapView.swift */,
 				53257E6A5D86A263CDADD10F /* FishingView.swift */,
 				FCD221C185EBF3AFA800A548 /* OpenMeteoProvider.swift */,
@@ -170,6 +184,7 @@
 		CE421B4F288B655800A2BD53 /* Tests iOS */ = {
 			isa = PBXGroup;
 			children = (
+				2FED4E016CF40F274CECC841 /* WeatherModules.storekit */,
 				CE421B50288B655800A2BD53 /* Tests_iOS.swift */,
 				CE421B52288B655800A2BD53 /* Tests_iOSLaunchTests.swift */,
 			);
@@ -328,6 +343,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F43D2A602DD29A9112026C45 /* WeatherModules.storekit in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -345,6 +361,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9DA8101114640D2F6CC18569 /* ModuleViews.swift in Sources */,
+				F02109FDD00E1F1A37DA9016 /* ModuleStore.swift in Sources */,
+				E55163F1B95C66D8C58EFC1B /* WeatherModule.swift in Sources */,
 				53124B277738743EB71E6377 /* WeatherMapView.swift in Sources */,
 				91027A6D5171EDB2B65AADBE /* FishingView.swift in Sources */,
 				7DFF36DF0B660AD7D869F93E /* OpenMeteoProvider.swift in Sources */,
@@ -364,6 +383,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B16B7150C9DDBA76A07F38CC /* ModuleViews.swift in Sources */,
+				ACB7C4E896F54D6E08F7F890 /* ModuleStore.swift in Sources */,
+				2C94D39CD81DD346F0936779 /* WeatherModule.swift in Sources */,
 				65520BF7A3C92AF5BFF25D51 /* WeatherMapView.swift in Sources */,
 				E886C29174074C8AAF49EC38 /* FishingView.swift in Sources */,
 				008D681E080772C9ECA94DC2 /* OpenMeteoProvider.swift in Sources */,

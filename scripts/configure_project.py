@@ -10,7 +10,7 @@ s = project.read_text()
 def ident(text):
     return hashlib.sha1(text.encode()).hexdigest()[:24].upper()
 
-for path in ['Core/WeatherModels.swift', 'WeatherProvider.swift', 'LocationManager.swift', 'WeatherViewModel.swift', 'PreviewWeather.swift', 'Core/OpenMeteoResponse.swift', 'Core/FishingOutlook.swift', 'OpenMeteoProvider.swift', 'FishingView.swift', 'WeatherMapView.swift']:
+for path in ['Core/WeatherModels.swift', 'WeatherProvider.swift', 'LocationManager.swift', 'WeatherViewModel.swift', 'PreviewWeather.swift', 'Core/OpenMeteoResponse.swift', 'Core/FishingOutlook.swift', 'OpenMeteoProvider.swift', 'FishingView.swift', 'WeatherMapView.swift', 'Core/WeatherModule.swift', 'ModuleStore.swift', 'ModuleViews.swift']:
     ref = ident(path)
     if ref in s:
         continue
@@ -38,6 +38,17 @@ if ref not in s:
         s = s.replace('/* End PBXBuildFile section */', f'\t\t{build} /* {resource} in Resources */ = {{isa = PBXBuildFile; fileRef = {ref}; }};\n/* End PBXBuildFile section */')
         pos = s.index('files = (', s.index(phase + ' /* Resources */ = {')) + len('files = (')
         s = s[:pos] + f'\n\t\t\t\t{build} /* {resource} in Resources */,' + s[pos:]
+# Bundle local StoreKit data only with UI tests; production products come from Apple.
+resource = 'WeatherModules.storekit'
+ref = ident(resource)
+if ref not in s:
+    s = s.replace('/* End PBXFileReference section */', f'\t\t{ref} /* {resource} */ = {{isa = PBXFileReference; lastKnownFileType = text; path = "{resource}"; sourceTree = SOURCE_ROOT; }};\n/* End PBXFileReference section */')
+    pos = s.index('children = (', s.index('CE421B4F288B655800A2BD53 /* Tests iOS */ = {')) + len('children = (')
+    s = s[:pos] + f'\n\t\t\t\t{ref} /* {resource} */,' + s[pos:]
+    build = ident(resource + 'iosTests')
+    s = s.replace('/* End PBXBuildFile section */', f'\t\t{build} /* {resource} in Resources */ = {{isa = PBXBuildFile; fileRef = {ref}; }};\n/* End PBXBuildFile section */')
+    pos = s.index('files = (', s.index('CE421B4A288B655800A2BD53 /* Resources */ = {')) + len('files = (')
+    s = s[:pos] + f'\n\t\t\t\t{build} /* {resource} in Resources */,' + s[pos:]
 s = s.replace('IPHONEOS_DEPLOYMENT_TARGET = 15.5;', 'IPHONEOS_DEPLOYMENT_TARGET = 16.0;')
 s = s.replace('MACOSX_DEPLOYMENT_TARGET = 12.3;', 'MACOSX_DEPLOYMENT_TARGET = 13.0;')
 s = s.replace('MARKETING_VERSION = 1.0;', 'MARKETING_VERSION = 1.1;')

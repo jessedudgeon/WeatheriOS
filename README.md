@@ -49,3 +49,9 @@ xcodebuild -project Weather.xcodeproj -scheme Weather-macOS \
 Choose an installed simulator using `xcrun simctl list devices available`. CI selects one automatically. Core tests cover persistence, cache expiry, units, live-response decoding, incomplete API responses, map URLs, fishing filters, and pressure trends. UI tests cover first launch, saved-data deletion, Maps/Fishing navigation, and a real Open-Meteo forecast without WeatherKit credentials. Fixture-only tests use `--ui-testing`; the explicit live test uses `--live-weather-test`. Both launch hooks exist only in Debug builds.
 
 See [checkpoint](docs/CHECKPOINT.md), [release checklist](docs/RELEASE.md), and [privacy](docs/PRIVACY.md).
+
+## Optional modules
+
+Basic forecasts, search, saved places, and maps stay free. The Modules tab offers one-time Fishing, Golf, and Lake Erie Fishing purchases through StoreKit 2, with restoration and verified access. Lake Erie Fishing includes general Fishing; Golf is separate. Real prices appear only when Apple returns configured products. Until then, purchases are shown as unavailable.
+
+See [module setup and testing](docs/MODULES.md) for the local StoreKit configuration, product IDs, coverage, and commercial release blockers. The current free Open-Meteo service must be replaced with an appropriately licensed data deployment before releasing paid features.

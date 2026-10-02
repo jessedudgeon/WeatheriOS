@@ -19,3 +19,5 @@ Provider policies and attribution:
 Opening source, alert, policy, or support links contacts those websites under their policies. Project support: https://github.com/jessedudgeon/WeatheriOS/issues. Avoid sharing private coordinates or credentials in public issues.
 
 Review and host this policy at a public URL before App Store distribution.
+
+Optional module purchases are processed by Apple using your Apple Account. The app reads verified StoreKit transactions to determine access and restore purchases; it does not receive payment-card details or send purchase history to an app-operated server. Deleting saved weather leaves Apple purchases intact. The Lake Erie planner uses a separate on-device weather cache, which is included in Delete saved places and weather. Regional forecasts contact the same selected weather provider. Opening official marine resources contacts the National Weather Service website.

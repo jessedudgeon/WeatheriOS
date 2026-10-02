@@ -54,3 +54,9 @@ Confirmed the final previous revision `68fffff` passed all four CI jobs in run 3
 - Added three regression tests for sunset clipping, minimum duration, and the 24-hour boundary.
 
 Local diff checks passed; this Linux session has no Swift/Xcode. Native builds and automated tests for this follow-up must be checked in PR CI. Physical-device acceptance, final icons, and signing/distribution remain outstanding.
+
+## Purchasable modules — October 1, 2026
+
+Continued from merged main `1623616` on `codex/purchasable-modules`. Added a stable module catalog and StoreKit 2 non-consumable purchase/restore/access lifecycle. Basic weather and maps remain free; existing Fishing is gated, Golf adds round-length weather windows, and Lake Erie Fishing adds a shore-city planner and includes general Fishing. Added local StoreKit configuration, entitlement/golf regression tests, locked/owned UI tests, and a local purchase/relaunch/restore/refund UI test. Native CI must verify this change; no local Xcode runtime is available.
+
+See MODULES.md for exact product IDs, illustrative test-only prices, access rules, data limitations, and App Store setup. Real prices/products and commercial weather licensing remain unconfigured. No paid launch or App Store submission occurred.
