@@ -3,6 +3,34 @@ import XCTest
 final class Tests_iOS: XCTestCase {
     override func setUpWithError() throws { continueAfterFailure = false }
 
+    func testLocationPermissionAndCoordinateForecast() {
+        let app = XCUIApplication()
+        app.resetAuthorizationStatus(for: .location)
+        app.launchArguments = ["--ui-testing", "--empty"]
+        app.launch()
+        app.buttons["currentLocation"].tap()
+        let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
+        let allow = springboard.buttons["Allow While Using App"]
+        if allow.waitForExistence(timeout: 8) { allow.tap() }
+        XCTAssertTrue(app.staticTexts["forecastPlace"].waitForExistence(timeout: 30), "A granted simulator location should trigger a forecast")
+        XCTAssertEqual(app.staticTexts["forecastPlace"].label, "Current location")
+    }
+
+    func testDeniedLocationStillOffersSearch() {
+        let app = XCUIApplication()
+        app.resetAuthorizationStatus(for: .location)
+        app.launchArguments = ["--ui-testing", "--empty"]
+        app.launch()
+        app.buttons["currentLocation"].tap()
+        let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
+        let deny = springboard.alerts.buttons.matching(NSPredicate(format: "label BEGINSWITH[c] 'Don'")).firstMatch
+        XCTAssertTrue(deny.waitForExistence(timeout: 8))
+        deny.tap()
+        XCTAssertTrue(app.buttons["Search instead"].waitForExistence(timeout: 5))
+        app.buttons["Search instead"].tap()
+        XCTAssertTrue(app.textFields["citySearchField"].waitForExistence(timeout: 5))
+    }
+
     func testLiveOpenMeteoLoadsWithoutWeatherKitProvisioning() {
         let app = XCUIApplication()
         app.launchArguments = ["--live-weather-test"]

@@ -42,7 +42,11 @@ jobs:
         run: |
           DEVICE_ID=$(xcrun simctl list devices available -j | python3 -c 'import json,sys; d=json.load(sys.stdin); print(next(x["udid"] for k,v in d["devices"].items() if "iOS" in k for x in v if "iPhone" in x["name"]))')
           echo "DEVICE_ID=$DEVICE_ID" >> "$GITHUB_ENV"
-      - name: Run deterministic UI tests
+      - name: Set a known simulator location
+        run: |
+          xcrun simctl bootstatus "$DEVICE_ID" -b
+          xcrun simctl location "$DEVICE_ID" set 40.6581,-84.9519
+      - name: Run UI and live forecast tests
         run: >-
           xcodebuild -project Weather.xcodeproj -scheme Weather-iOS
           -destination "platform=iOS Simulator,id=$DEVICE_ID"
