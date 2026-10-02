@@ -48,11 +48,16 @@ jobs:
           xcrun simctl location "$DEVICE_ID" set 40.6581,-84.9519
       - name: Run UI and live forecast tests
         run: >-
-          xcodebuild -project Weather.xcodeproj -scheme Weather-iOS
+          xcodebuild -project Weather.xcodeproj -scheme Weather-StoreKit
           -destination "platform=iOS Simulator,id=$DEVICE_ID"
-          -parallel-testing-enabled NO -resultBundlePath TestResults.xcresult CODE_SIGNING_ALLOWED=NO test
+          -parallel-testing-enabled NO -resultBundlePath TestResults.xcresult CODE_SIGNING_ALLOWED=YES CODE_SIGN_IDENTITY=- CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM="" test
+      - name: StoreKit diagnostics after failure
+        if: failure()
+        run: xcrun simctl spawn "$DEVICE_ID" log show --last 10m --style compact --predicate 'subsystem CONTAINS[c] "storekit"' > storekit-diagnostics.log 2>&1 || true
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: ios-test-results
-          path: TestResults.xcresult
+          path: |
+            TestResults.xcresult
+            storekit-diagnostics.log

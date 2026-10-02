@@ -3,6 +3,8 @@ import SwiftUI
 struct ContentView: View {
     @StateObject private var model = WeatherViewModel.makeAppModel()
     @StateObject private var location = LocationManager()
+    @StateObject private var modules = ModuleStore()
+    @State private var activeModule: WeatherModule?
     @Environment(\.scenePhase) private var scenePhase
     @State private var showSearch = false
     @State private var showSettings = false
@@ -11,14 +13,16 @@ struct ContentView: View {
 
     var body: some View {
         NavigationStack {
+            ScrollViewReader { scroll in
             ScrollView {
                 VStack(alignment: .leading, spacing: 22) {
                     if !model.savedPlaces.isEmpty { savedPlaces }
-                    if model.selectedPlace != nil {
+                    Group {
                         Picker("View", selection: $section) {
                             Text("Forecast").tag("Forecast")
                             Text("Maps").tag("Maps")
                             Text("Fishing").tag("Fishing")
+                            Text("Modules").tag("Modules")
                         }.pickerStyle(.segmented).accessibilityIdentifier("weatherSection")
                     }
                     if let message = location.message {
@@ -29,17 +33,22 @@ struct ContentView: View {
                         }.buttonStyle(.bordered)
                     }
                     if let message = model.message { notice(message, symbol: "wifi.exclamationmark") }
-                    if section == "Maps", let place = model.selectedPlace {
+                    if section == "Modules" {
+                        if let module = activeModule {
+                            Button("All modules") { activeModule = nil }
+                            moduleContent(module)
+                        } else {
+                            ModuleStoreView(store: modules) { activeModule = $0 }
+                        }
+                    } else if section == "Fishing" {
+                        moduleContent(.fishing)
+                    } else if section == "Maps", let place = model.selectedPlace {
                         WeatherMapView(place: place, units: model.units)
                     } else if let forecast = model.forecast {
                         TimelineView(.periodic(from: .now, by: 60)) { context in
                             if forecast.canUseOffline(at: context.date) {
-                                if section == "Fishing" {
-                                    FishingView(forecast: forecast, units: model.units, isCached: model.isCached)
-                                } else {
-                                    ForecastDashboard(forecast: forecast, units: model.units,
-                                                      playful: model.playful, isCached: model.isCached)
-                                }
+                                ForecastDashboard(forecast: forecast, units: model.units,
+                                                  playful: model.playful, isCached: model.isCached)
                             } else {
                                 VStack(alignment: .leading, spacing: 12) {
                                     Text("This saved forecast has expired.").font(.headline)
@@ -70,6 +79,7 @@ struct ContentView: View {
                         welcome
                     }
                 }
+                .id("weatherTop")
                 .padding(20)
                 .frame(maxWidth: 780)
                 .frame(maxWidth: .infinity)
@@ -111,16 +121,57 @@ struct ContentView: View {
                 }
             }
             .sheet(isPresented: $showSettings) {
-                WeatherSettingsView(model: model) { location.cancel() }
+                WeatherSettingsView(model: model) {
+                    location.cancel()
+                    section = "Forecast"
+                    activeModule = nil
+                    UserDefaults.standard.removePersistentDomain(forName: "WeatherRegional")
+                }
             }
             .onAppear { location.onLocation = { model.useLocation($0) } }
+            .onChange(of: section) { _ in scroll.scrollTo("weatherTop", anchor: .top) }
+            .onChange(of: activeModule) { _ in scroll.scrollTo("weatherTop", anchor: .top) }
             .onChange(of: scenePhase) { phase in
-                if phase == .active { model.refreshIfNeeded() }
+                if phase == .active {
+                    model.refreshIfNeeded()
+                    Task { await modules.refreshAccess() }
+                }
+            }
             }
         }
         #if os(macOS)
         .frame(minWidth: 520, minHeight: 650)
         #endif
+    }
+
+    @ViewBuilder private func moduleContent(_ module: WeatherModule) -> some View {
+        if !modules.owns(module) {
+            LockedModuleView(module: module, checking: modules.isCheckingAccess) {
+                activeModule = nil
+                section = "Modules"
+            }
+        } else if module == .lakeErieFishing {
+            LakeErieFishingView(units: model.units, source: model.source)
+        } else if let forecast = model.forecast {
+            TimelineView(.periodic(from: .now, by: 60)) { context in
+                if forecast.canUseOffline(at: context.date) {
+                    if module == .fishing {
+                        FishingView(forecast: forecast, units: model.units, isCached: model.isCached)
+                    } else {
+                        GolfView(forecast: forecast, units: model.units, isCached: model.isCached)
+                    }
+                } else {
+                    Text("This saved forecast has expired. Refresh weather to use this module.")
+                    Button("Refresh weather") { model.refresh() }.disabled(model.isLoading)
+                }
+            }
+        } else if model.isLoading {
+            ProgressView("Loading weather for your module…")
+        } else {
+            Text("Choose a location to use \(module.title).").font(.headline)
+            Button("Search for a city") { showSearch = true }.buttonStyle(.borderedProminent)
+            if model.selectedPlace != nil { Button("Retry weather") { model.refresh() } }
+        }
     }
 
     private func openLocationSettings() {

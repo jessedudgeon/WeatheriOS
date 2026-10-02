@@ -54,3 +54,15 @@ Confirmed the final previous revision `68fffff` passed all four CI jobs in run 3
 - Added three regression tests for sunset clipping, minimum duration, and the 24-hour boundary.
 
 Local diff checks passed; this Linux session has no Swift/Xcode. Native builds and automated tests for this follow-up must be checked in PR CI. Physical-device acceptance, final icons, and signing/distribution remain outstanding.
+
+## Purchasable modules — October 1, 2026
+
+Continued from merged main `1623616` on `codex/purchasable-modules`. Added a stable module catalog and StoreKit 2 non-consumable purchase/restore/access lifecycle. Basic weather and maps remain free; existing Fishing is gated, Golf adds round-length weather windows, and Lake Erie Fishing adds a shore-city planner and includes general Fishing. Added local StoreKit configuration, entitlement/golf regression tests, locked/owned UI tests, and a local purchase/relaunch/restore/refund UI test. Native CI must verify this change; no local Xcode runtime is available.
+
+See MODULES.md for exact product IDs, illustrative test-only prices, access rules, data limitations, and App Store setup. Real prices/products and commercial weather licensing remain unconfigured. No paid launch or App Store submission occurred.
+
+First module CI passed both Release builds and all 31 core tests. UI testing exposed an inherited accessibility identifier hiding the locked-store button and a test tapping Buy before entitlement initialization completed. Removed the container identifier, added an enabled-button wait, bounded initial access-check UI waiting, and made verified purchase/refund transactions update access immediately. Follow-up native CI is required.
+
+At `85fff5b`, both builds and 31 core tests pass, and 12 of 13 UI executions pass (including free/locked access and all weather/location checks). StoreKit returns local product prices but its purchase call does not complete in the unsigned simulator setup. Added an opt-in Weather-StoreKit scheme with the local configuration selected, and switched UI CI to ad-hoc simulator signing. No production signature bypass or entitlement shortcut was added. This purchase-flow verification remains a release gate until CI passes.
+
+The explicit Run scheme/ad-hoc signing run `2181f9d` still stalls at Product.purchase; its two Release builds, 31 core tests, and the other 12 UI executions pass. Added a TestAction StoreKit configuration via a dedicated test plan and diagnostic output for any remaining failure. This is a test-environment investigation, not a bypass or a claim that purchases work.

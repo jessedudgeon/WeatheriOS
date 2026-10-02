@@ -1,0 +1,63 @@
+{
+  "identifier": "E0961871-1F41-4CF9-BAE2-467D15CF46B0",
+  "nonRenewingSubscriptions": [],
+  "products": [
+    {
+      "displayPrice": "4.99",
+      "familyShareable": false,
+      "internalID": "10001",
+      "localizations": [
+        {
+          "description": "Local test purchase for the Fishing module.",
+          "displayName": "Fishing",
+          "locale": "en_US"
+        }
+      ],
+      "productID": "jessedudgeon.Weather.module.fishing",
+      "referenceName": "Fishing",
+      "type": "NonConsumable"
+    },
+    {
+      "displayPrice": "4.99",
+      "familyShareable": false,
+      "internalID": "10002",
+      "localizations": [
+        {
+          "description": "Local test purchase for the Golf module.",
+          "displayName": "Golf",
+          "locale": "en_US"
+        }
+      ],
+      "productID": "jessedudgeon.Weather.module.golf",
+      "referenceName": "Golf",
+      "type": "NonConsumable"
+    },
+    {
+      "displayPrice": "7.99",
+      "familyShareable": false,
+      "internalID": "10003",
+      "localizations": [
+        {
+          "description": "Local test purchase for the Lake Erie Fishing module.",
+          "displayName": "Lake Erie Fishing",
+          "locale": "en_US"
+        }
+      ],
+      "productID": "jessedudgeon.Weather.module.lakeErieFishing",
+      "referenceName": "Lake Erie Fishing",
+      "type": "NonConsumable"
+    }
+  ],
+  "settings": {
+    "_applicationInternalID": "",
+    "_developerTeamID": "",
+    "_failTransactionsEnabled": false,
+    "_locale": "en_US",
+    "_storefront": "USA"
+  },
+  "subscriptionGroups": [],
+  "version": {
+    "major": 3,
+    "minor": 0
+  }
+}

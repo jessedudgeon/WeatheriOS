@@ -1,4 +1,5 @@
 import XCTest
+import StoreKitTest
 
 final class Tests_iOS: XCTestCase {
     override func setUpWithError() throws { continueAfterFailure = false }
@@ -57,6 +58,80 @@ final class Tests_iOS: XCTestCase {
         XCTAssertTrue(app.staticTexts["weatherMapHeader"].waitForExistence(timeout: 5))
         app.segmentedControls["mapLayerPicker"].buttons["Wind"].tap()
         XCTAssertTrue(app.webViews.firstMatch.waitForExistence(timeout: 10))
+    }
+
+    func testStoreKitPurchaseRelaunchRestoreAndRefund() throws {
+        let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "WeatherModules", withExtension: "storekit"))
+        let session = try SKTestSession(contentsOf: url)
+        session.resetToDefaultState()
+        session.disableDialogs = true
+        session.clearTransactions()
+        defer { session.clearTransactions() }
+        let app = XCUIApplication()
+        app.launchArguments = ["--ui-testing", "--storekit-testing"]
+        app.launch()
+        app.segmentedControls["weatherSection"].buttons["Modules"].tap()
+        let buy = app.buttons["buyModule_fishing"]
+        XCTAssertTrue(buy.waitForExistence(timeout: 15))
+        let enabled = XCTNSPredicateExpectation(predicate: NSPredicate(format: "enabled == true"), object: buy)
+        XCTAssertEqual(XCTWaiter.wait(for: [enabled], timeout: 30), .completed)
+        buy.tap()
+        let unlocked = app.buttons["openModule_fishing"].waitForExistence(timeout: 30)
+        if !unlocked {
+            print("StoreKit transaction count: \(session.allTransactions().count)")
+            print(XCUIApplication(bundleIdentifier: "com.apple.springboard").debugDescription)
+            print(app.debugDescription)
+        }
+        XCTAssertTrue(unlocked)
+        app.terminate()
+        app.launch()
+        app.segmentedControls["weatherSection"].buttons["Fishing"].tap()
+        XCTAssertTrue(app.staticTexts["Plan your next cast."].waitForExistence(timeout: 10))
+        app.segmentedControls["weatherSection"].buttons["Modules"].tap()
+        let restore = app.buttons["restorePurchases"]
+        for _ in 0..<12 { if restore.isHittable { break }; app.swipeUp() }
+        XCTAssertTrue(restore.isHittable)
+        restore.tap()
+        // The store status is above the cards; wait by existence, not visibility.
+        XCTAssertTrue(app.staticTexts["Your module purchases have been restored."].waitForExistence(timeout: 15))
+        let transaction = try XCTUnwrap(session.allTransactions().first)
+        try session.refundTransaction(identifier: transaction.identifier)
+        for _ in 0..<12 { if app.segmentedControls["weatherSection"].isHittable { break }; app.swipeDown() }
+        app.segmentedControls["weatherSection"].buttons["Fishing"].tap()
+        XCTAssertTrue(app.buttons["viewModuleStore"].waitForExistence(timeout: 15))
+    }
+
+    func testLockedModulesLeaveBasicWeatherFree() {
+        let app = XCUIApplication()
+        app.launchArguments = ["--ui-testing", "--locked-modules"]
+        app.launch()
+        XCTAssertTrue(app.staticTexts["forecastPlace"].waitForExistence(timeout: 10))
+        app.segmentedControls["weatherSection"].buttons["Fishing"].tap()
+        XCTAssertTrue(app.buttons["viewModuleStore"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.staticTexts["Plan your next cast."].exists)
+        app.buttons["viewModuleStore"].tap()
+        XCTAssertTrue(app.staticTexts["moduleStoreHeader"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["openModule_fishing"].exists)
+        app.segmentedControls["weatherSection"].buttons["Forecast"].tap()
+        XCTAssertTrue(app.staticTexts["forecastPlace"].waitForExistence(timeout: 5))
+    }
+
+    func testOwnedGolfAndRegionalModulesOpen() {
+        let app = XCUIApplication()
+        app.launchArguments = ["--ui-testing"]
+        app.launch()
+        app.segmentedControls["weatherSection"].buttons["Modules"].tap()
+        let golf = app.buttons["openModule_golf"]
+        for _ in 0..<8 { if golf.isHittable { break }; app.swipeUp() }
+        XCTAssertTrue(golf.isHittable)
+        golf.tap()
+        XCTAssertTrue(app.staticTexts["golfHeader"].waitForExistence(timeout: 5))
+        app.buttons["All modules"].tap()
+        let regional = app.buttons["openModule_lakeErieFishing"]
+        for _ in 0..<10 { if regional.isHittable { break }; app.swipeUp() }
+        XCTAssertTrue(regional.isHittable)
+        regional.tap()
+        XCTAssertTrue(app.staticTexts["lakeErieHeader"].waitForExistence(timeout: 5))
     }
 
     func testFirstLaunchOffersSearchWithoutLocationPermission() {
