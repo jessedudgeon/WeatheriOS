@@ -31,13 +31,23 @@ struct FishingOutlook {
             if qualifies { group.append(hour) }
         }
         if group.count >= 2 { groups.append(group) }
-        return Array(groups.prefix(3)).compactMap { group in
+        return Array(groups.compactMap { group -> FishingWindow? in
             guard let first = group.first, let last = group.last else { return nil }
-            return FishingWindow(start: first.date, end: last.date.addingTimeInterval(3600),
+            // Hourly daylight flags describe the sample time, not the whole hour.
+            // Clip the last interval to sunset and the advertised 24-hour horizon.
+            var end = min(last.date.addingTimeInterval(3600), now.addingTimeInterval(86400))
+            var calendar = Calendar(identifier: .gregorian)
+            calendar.timeZone = forecast.place.timeZone
+            if let day = forecast.days.first(where: { calendar.isDate($0.date, inSameDayAs: last.date) }),
+               let sunset = day.sunset {
+                end = min(end, sunset)
+            }
+            guard end.timeIntervalSince(first.date) >= 7200 else { return nil }
+            return FishingWindow(start: first.date, end: end,
                                  maxWind: group.compactMap(\.windSpeed).max() ?? 0,
                                  maxGust: group.compactMap(\.windGust).max() ?? 0,
                                  maxRainChance: group.map(\.precipitationChance).max() ?? 0)
-        }
+        }.prefix(3))
     }
 
     func pressureChange(at now: Date = Date()) -> Double? {

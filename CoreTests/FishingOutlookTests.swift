@@ -39,13 +39,42 @@ final class FishingOutlookTests: XCTestCase {
         XCTAssertEqual(FishingOutlook.compass(225), "SW")
     }
 
-    private func fixture() -> Forecast {
+    func testWindowEndsAtSunsetRatherThanEndOfHour() {
+        let sunset = now.addingTimeInterval(5.5 * 3600)
+        let windows = FishingOutlook(forecast: fixture(sunset: sunset)).windows(at: now)
+        XCTAssertEqual(windows.count, 1)
+        XCTAssertEqual(windows.first?.end, sunset)
+    }
+
+    func testSunsetClippingRejectsLessThanTwoHours() {
+        let f = fixture(sunset: now.addingTimeInterval(1.5 * 3600))
+        XCTAssertTrue(FishingOutlook(forecast: f).windows(at: now).isEmpty)
+    }
+
+    func testWindowDoesNotExtendPast24HourHorizon() {
+        let hours = (22...24).map { offset in
+            HourForecast(date: now.addingTimeInterval(Double(offset) * 3600), symbol: "sun.max",
+                         temperature: 20, precipitationChance: 0.1, windSpeed: 10,
+                         windGust: 20, isDaylight: true)
+        }
+        let f = replacingHours(fixture(), hours)
+        let windows = FishingOutlook(forecast: f).windows(at: now.addingTimeInterval(1800))
+        XCTAssertEqual(windows.count, 1)
+        XCTAssertEqual(windows.first?.end, now.addingTimeInterval(24.5 * 3600))
+    }
+
+    private func fixture(sunset: Date? = nil) -> Forecast {
+        let days = sunset.map {
+            [DayForecast(date: now, symbol: "sun.max", low: 10, high: 20, precipitationChance: 0.1,
+                         sunrise: now.addingTimeInterval(-3600), sunset: $0)]
+        } ?? []
+        return
         Forecast(place: Place(name: "Lake", latitude: 40, longitude: -85, timeZoneIdentifier: "UTC"),
                  fetchedAt: now, observedAt: now, condition: "Clear", symbol: "sun.max", temperature: 20,
                  feelsLike: 20, humidity: 0.5, windSpeed: 10, uvIndex: 3,
                  hours: (0..<6).map { HourForecast(date: now.addingTimeInterval(Double($0) * 3600), symbol: "sun.max", temperature: 20,
                                                  precipitationChance: 0.1, windSpeed: 10, windGust: 20, pressure: 1010 + Double($0), isDaylight: true, weatherCode: 0) },
-                 days: [], warnings: [], alertsAvailable: false, attributionURL: URL(string: "https://open-meteo.com")!, lightMarkURL: nil, darkMarkURL: nil)
+                 days: days, warnings: [], alertsAvailable: false, attributionURL: URL(string: "https://open-meteo.com")!, lightMarkURL: nil, darkMarkURL: nil)
     }
     private func replacingHours(_ f: Forecast, _ hours: [HourForecast]) -> Forecast {
         Forecast(place: f.place, fetchedAt: f.fetchedAt, observedAt: f.observedAt, condition: f.condition, symbol: f.symbol,

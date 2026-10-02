@@ -255,15 +255,16 @@ private struct ForecastDashboard: View {
 
             card("10-day forecast", symbol: "calendar") {
                 ForEach(forecast.days.prefix(10)) { day in
-                    HStack(spacing: 12) {
-                        Text(date(day.date, format: "EEE d")).frame(minWidth: 64, alignment: .leading)
-                        Image(systemName: day.symbol).symbolRenderingMode(.hierarchical).foregroundStyle(.secondary).frame(width: 28)
-                            .accessibilityHidden(true)
-                        Text(day.precipitationChance, format: .percent.precision(.fractionLength(0)))
-                            .font(.caption).foregroundStyle(.blue)
-                        Spacer(minLength: 4)
-                        Text(units.temperature(day.low)).foregroundStyle(.secondary)
-                        Text(units.temperature(day.high)).fontWeight(.semibold)
+                    ViewThatFits(in: .horizontal) {
+                        HStack(spacing: 12) {
+                            dayLabel(day)
+                            Spacer(minLength: 4)
+                            dayTemperatures(day)
+                        }
+                        VStack(alignment: .leading, spacing: 10) {
+                            dayLabel(day)
+                            dayTemperatures(day)
+                        }.frame(maxWidth: .infinity, alignment: .leading)
                     }.padding(.vertical, 7).accessibilityElement(children: .ignore)
                         .accessibilityLabel("\(date(day.date, format: "EEEE MMMM d")), low \(units.temperature(day.low)), high \(units.temperature(day.high)), precipitation chance \(Int(day.precipitationChance * 100)) percent")
                     if day.id != forecast.days.prefix(10).last?.id { Divider() }
@@ -286,6 +287,23 @@ private struct ForecastDashboard: View {
             ForecastAttribution(forecast: forecast)
 
         }
+    }
+
+    private func dayLabel(_ day: DayForecast) -> some View {
+        HStack(spacing: 12) {
+            Text(date(day.date, format: "EEE d"))
+            Image(systemName: day.symbol).symbolRenderingMode(.hierarchical)
+                .foregroundStyle(.secondary).accessibilityHidden(true)
+            Text(day.precipitationChance, format: .percent.precision(.fractionLength(0)))
+                .font(.caption).foregroundStyle(.blue)
+        }.fixedSize(horizontal: true, vertical: false)
+    }
+
+    private func dayTemperatures(_ day: DayForecast) -> some View {
+        HStack(spacing: 12) {
+            Text("L \(units.temperature(day.low))").foregroundStyle(.secondary)
+            Text("H \(units.temperature(day.high))").fontWeight(.semibold)
+        }.fixedSize(horizontal: true, vertical: false)
     }
 
     private var heroTemperature: some View {

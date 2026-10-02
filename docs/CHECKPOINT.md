@@ -43,3 +43,14 @@ At `6a13ee0`, both Release builds and all 21 core tests passed. The Debug UI bui
 CI run https://github.com/jessedudgeon/WeatheriOS/actions/runs/36944008363 at `b2eb2f4` passed both native Release builds, all 21 core tests, and all 10 iPhone simulator UI executions. The UI suite confirmed a real no-key Open-Meteo forecast, native location permission/coordinate delivery, denied-location search recovery, Maps/Fishing navigation, saved-data deletion, and first-launch behavior. Live search returned Berne, Indiana, and both Windy map endpoints returned HTTP 200.
 
 Retrieved and inspected CI screenshots of the live forecast and fishing briefing. Adjusted hourly/daily cloud-symbol contrast in light mode and added the end weekday to fishing-window labels. Physical-device positioning, map interaction, landscape/dynamic-type review, final app icons, and distribution signing remain release checks. No claim of App Store/TestFlight release.
+
+## Follow-up — fishing boundaries and adaptable forecast rows
+
+Confirmed the final previous revision `68fffff` passed all four CI jobs in run 36945062320. Continued on the existing PR branch.
+
+- Fishing windows now stop at a supplied local sunset and at the advertised 24-hour horizon. A window shortened below two hours is discarded before selecting up to three results. When sunset is unavailable, the existing hourly daylight flags remain the fallback.
+- Map loading/error state now resets for every URL change, including a different place or units, as well as a different layer.
+- Daily forecast rows can stack their date/condition and temperature groups when horizontal space is insufficient, with explicit high/low labels.
+- Added three regression tests for sunset clipping, minimum duration, and the 24-hour boundary.
+
+Local diff checks passed; this Linux session has no Swift/Xcode. Native builds and automated tests for this follow-up must be checked in PR CI. Physical-device acceptance, final icons, and signing/distribution remain outstanding.

@@ -45,7 +45,7 @@ struct WeatherMapView: View {
             Text("Map and forecast layers by Windy.com / ECMWF; base-map credit is shown on the map. Opening Maps sends this place’s coordinates to Windy. Map forecasts can differ from the selected weather provider.")
                 .font(.caption).foregroundStyle(.secondary)
         }
-        .onChange(of: layer) { _ in loading = true; error = nil }
+        .onChange(of: url) { _ in loading = true; error = nil }
         .task(id: url.absoluteString + reload.uuidString) {
             try? await Task.sleep(nanoseconds: 25_000_000_000)
             guard !Task.isCancelled, loading else { return }
