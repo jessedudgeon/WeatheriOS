@@ -17,6 +17,28 @@
 		CE421B63288B655800A2BD53 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE421B39288B655700A2BD53 /* ContentView.swift */; };
 		CE421B64288B655800A2BD53 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE421B3A288B655800A2BD53 /* Assets.xcassets */; };
 		CE421B65288B655800A2BD53 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE421B3A288B655800A2BD53 /* Assets.xcassets */; };
+		F3DDAE9A21037FD9D5B1526E /* WeatherModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = F12110C9D174003D4E30D52B; };
+		B014BA23E64B7D6A16D5533D /* WeatherModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = F12110C9D174003D4E30D52B; };
+		EBC396586C9E31963A6DE750 /* WeatherProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D418904352D9BB3AE7FB9A71; };
+		19584C9FEA502FEBDE98148D /* WeatherProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D418904352D9BB3AE7FB9A71; };
+		314E335962542C39BC7048B8 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F245FBF56BEF8C4E184936; };
+		3294CC457C17E8270B55ED0A /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F245FBF56BEF8C4E184936; };
+		F00EEAC32A1087DD581215EE /* WeatherViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50B6A2EC6772E3171E9D447; };
+		C6A51983B94E9247B2073732 /* WeatherViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50B6A2EC6772E3171E9D447; };
+		A452F6CE5F8FEC564448242B /* PreviewWeather.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AD8F966469001E85B151CB; };
+		D5A4E740C0C263B596422D84 /* PreviewWeather.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38AD8F966469001E85B151CB; };
+		065AA8FFD5648FD54548A26A /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 26B2A637F7DC4079D5AB78A5; };
+		E6F454AC0848E1320AB47AC1 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 26B2A637F7DC4079D5AB78A5; };
+		34783E4CDCBF83C0CF070D0F /* OpenMeteoResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C0FCEBD110CBC171004F073; };
+		0BE8F53BCBA9588FD426C980 /* OpenMeteoResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C0FCEBD110CBC171004F073; };
+		4329F2684F4D44A8C6B77BBA /* FishingOutlook.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2111EE6631437F32464865D; };
+		CE5D89F0CED49ABECCAD3F4B /* FishingOutlook.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2111EE6631437F32464865D; };
+		7DFF36DF0B660AD7D869F93E /* OpenMeteoProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCD221C185EBF3AFA800A548; };
+		008D681E080772C9ECA94DC2 /* OpenMeteoProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCD221C185EBF3AFA800A548; };
+		91027A6D5171EDB2B65AADBE /* FishingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53257E6A5D86A263CDADD10F; };
+		E886C29174074C8AAF49EC38 /* FishingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53257E6A5D86A263CDADD10F; };
+		53124B277738743EB71E6377 /* WeatherMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FEE86130377FF4F576758E1; };
+		65520BF7A3C92AF5BFF25D51 /* WeatherMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FEE86130377FF4F576758E1; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +71,17 @@
 		CE421B58288B655800A2BD53 /* Tests macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE421B5C288B655800A2BD53 /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
 		CE421B5E288B655800A2BD53 /* Tests_macOSLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOSLaunchTests.swift; sourceTree = "<group>"; };
+		F12110C9D174003D4E30D52B /* WeatherModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Core/WeatherModels.swift"; sourceTree = "<group>"; };
+		D418904352D9BB3AE7FB9A71 /* WeatherProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WeatherProvider.swift"; sourceTree = "<group>"; };
+		B4F245FBF56BEF8C4E184936 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocationManager.swift"; sourceTree = "<group>"; };
+		A50B6A2EC6772E3171E9D447 /* WeatherViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WeatherViewModel.swift"; sourceTree = "<group>"; };
+		38AD8F966469001E85B151CB /* PreviewWeather.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PreviewWeather.swift"; sourceTree = "<group>"; };
+		26B2A637F7DC4079D5AB78A5 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "PrivacyInfo.xcprivacy"; sourceTree = "<group>"; };
+		5C0FCEBD110CBC171004F073 /* OpenMeteoResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Core/OpenMeteoResponse.swift"; sourceTree = "<group>"; };
+		E2111EE6631437F32464865D /* FishingOutlook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Core/FishingOutlook.swift"; sourceTree = "<group>"; };
+		FCD221C185EBF3AFA800A548 /* OpenMeteoProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OpenMeteoProvider.swift"; sourceTree = "<group>"; };
+		53257E6A5D86A263CDADD10F /* FishingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FishingView.swift"; sourceTree = "<group>"; };
+		2FEE86130377FF4F576758E1 /* WeatherMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WeatherMapView.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +130,17 @@
 		CE421B37288B655700A2BD53 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				2FEE86130377FF4F576758E1 /* WeatherMapView.swift */,
+				53257E6A5D86A263CDADD10F /* FishingView.swift */,
+				FCD221C185EBF3AFA800A548 /* OpenMeteoProvider.swift */,
+				E2111EE6631437F32464865D /* FishingOutlook.swift */,
+				5C0FCEBD110CBC171004F073 /* OpenMeteoResponse.swift */,
+				26B2A637F7DC4079D5AB78A5 /* PrivacyInfo.xcprivacy */,
+				38AD8F966469001E85B151CB /* PreviewWeather.swift */,
+				A50B6A2EC6772E3171E9D447 /* WeatherViewModel.swift */,
+				B4F245FBF56BEF8C4E184936 /* LocationManager.swift */,
+				D418904352D9BB3AE7FB9A71 /* WeatherProvider.swift */,
+				F12110C9D174003D4E30D52B /* WeatherModels.swift */,
 				CE421B38288B655700A2BD53 /* WeatherApp.swift */,
 				CE421B39288B655700A2BD53 /* ContentView.swift */,
 				CE421B3A288B655800A2BD53 /* Assets.xcassets */,
@@ -266,6 +310,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				065AA8FFD5648FD54548A26A /* PrivacyInfo.xcprivacy in Resources */,
 				CE421B64288B655800A2BD53 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -274,6 +319,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E6F454AC0848E1320AB47AC1 /* PrivacyInfo.xcprivacy in Resources */,
 				CE421B65288B655800A2BD53 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -299,6 +345,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				53124B277738743EB71E6377 /* WeatherMapView.swift in Sources */,
+				91027A6D5171EDB2B65AADBE /* FishingView.swift in Sources */,
+				7DFF36DF0B660AD7D869F93E /* OpenMeteoProvider.swift in Sources */,
+				4329F2684F4D44A8C6B77BBA /* FishingOutlook.swift in Sources */,
+				34783E4CDCBF83C0CF070D0F /* OpenMeteoResponse.swift in Sources */,
+				A452F6CE5F8FEC564448242B /* PreviewWeather.swift in Sources */,
+				F00EEAC32A1087DD581215EE /* WeatherViewModel.swift in Sources */,
+				314E335962542C39BC7048B8 /* LocationManager.swift in Sources */,
+				EBC396586C9E31963A6DE750 /* WeatherProvider.swift in Sources */,
+				F3DDAE9A21037FD9D5B1526E /* WeatherModels.swift in Sources */,
 				CE421B62288B655800A2BD53 /* ContentView.swift in Sources */,
 				CE421B60288B655800A2BD53 /* WeatherApp.swift in Sources */,
 			);
@@ -308,6 +364,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				65520BF7A3C92AF5BFF25D51 /* WeatherMapView.swift in Sources */,
+				E886C29174074C8AAF49EC38 /* FishingView.swift in Sources */,
+				008D681E080772C9ECA94DC2 /* OpenMeteoProvider.swift in Sources */,
+				CE5D89F0CED49ABECCAD3F4B /* FishingOutlook.swift in Sources */,
+				0BE8F53BCBA9588FD426C980 /* OpenMeteoResponse.swift in Sources */,
+				D5A4E740C0C263B596422D84 /* PreviewWeather.swift in Sources */,
+				C6A51983B94E9247B2073732 /* WeatherViewModel.swift in Sources */,
+				3294CC457C17E8270B55ED0A /* LocationManager.swift in Sources */,
+				19584C9FEA502FEBDE98148D /* WeatherProvider.swift in Sources */,
+				B014BA23E64B7D6A16D5533D /* WeatherModels.swift in Sources */,
 				CE421B63288B655800A2BD53 /* ContentView.swift in Sources */,
 				CE421B61288B655800A2BD53 /* WeatherApp.swift in Sources */,
 			);
@@ -459,10 +525,13 @@
 		CE421B69288B655800A2BD53 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Weather uses your location only when requested to show your local forecast. You can search for a city instead.";
+				INFOPLIST_KEY_NSLocationUsageDescription = "Weather uses your location to show your local forecast when you request it.";
+				CODE_SIGN_ENTITLEMENTS = Shared/Weather.entitlements;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = FH6D8NXXS5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -471,12 +540,12 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = jessedudgeon.Weather;
 				PRODUCT_NAME = Weather;
 				SDKROOT = iphoneos;
@@ -489,10 +558,13 @@
 		CE421B6A288B655800A2BD53 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Weather uses your location only when requested to show your local forecast. You can search for a city instead.";
+				INFOPLIST_KEY_NSLocationUsageDescription = "Weather uses your location to show your local forecast when you request it.";
+				CODE_SIGN_ENTITLEMENTS = Shared/Weather.entitlements;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = FH6D8NXXS5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -501,12 +573,12 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = jessedudgeon.Weather;
 				PRODUCT_NAME = Weather;
 				SDKROOT = iphoneos;
@@ -520,12 +592,14 @@
 		CE421B6C288B655800A2BD53 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Weather uses your location only when requested to show your local forecast. You can search for a city instead.";
+				INFOPLIST_KEY_NSLocationUsageDescription = "Weather uses your location to show your local forecast when you request it.";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = macOS/macOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = FH6D8NXXS5;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -535,8 +609,8 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 12.3;
-				MARKETING_VERSION = 1.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = jessedudgeon.Weather;
 				PRODUCT_NAME = Weather;
 				SDKROOT = macosx;
@@ -548,12 +622,14 @@
 		CE421B6D288B655800A2BD53 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Weather uses your location only when requested to show your local forecast. You can search for a city instead.";
+				INFOPLIST_KEY_NSLocationUsageDescription = "Weather uses your location to show your local forecast when you request it.";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = macOS/macOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = FH6D8NXXS5;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -563,8 +639,8 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 12.3;
-				MARKETING_VERSION = 1.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = jessedudgeon.Weather;
 				PRODUCT_NAME = Weather;
 				SDKROOT = macosx;
@@ -578,11 +654,11 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = FH6D8NXXS5;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
-				MARKETING_VERSION = 1.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "jessedudgeon.Tests-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -598,11 +674,11 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = FH6D8NXXS5;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
-				MARKETING_VERSION = 1.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "jessedudgeon.Tests-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -619,11 +695,11 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = FH6D8NXXS5;
 				GENERATE_INFOPLIST_FILE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 12.3;
-				MARKETING_VERSION = 1.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "jessedudgeon.Tests-macOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -638,11 +714,11 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = FH6D8NXXS5;
 				GENERATE_INFOPLIST_FILE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 12.3;
-				MARKETING_VERSION = 1.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "jessedudgeon.Tests-macOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
