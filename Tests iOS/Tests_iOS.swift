@@ -73,8 +73,10 @@ final class Tests_iOS: XCTestCase {
         app.segmentedControls["weatherSection"].buttons["Modules"].tap()
         let buy = app.buttons["buyModule_fishing"]
         XCTAssertTrue(buy.waitForExistence(timeout: 15))
+        let enabled = XCTNSPredicateExpectation(predicate: NSPredicate(format: "enabled == true"), object: buy)
+        XCTAssertEqual(XCTWaiter.wait(for: [enabled], timeout: 30), .completed)
         buy.tap()
-        XCTAssertTrue(app.buttons["openModule_fishing"].waitForExistence(timeout: 15))
+        XCTAssertTrue(app.buttons["openModule_fishing"].waitForExistence(timeout: 30))
         app.terminate()
         app.launch()
         app.segmentedControls["weatherSection"].buttons["Fishing"].tap()

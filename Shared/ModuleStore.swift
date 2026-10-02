@@ -35,9 +35,13 @@ final class ModuleStore: ObservableObject {
                 await self?.receive(result)
             }
         }
+        Task { [weak self] in await self?.refreshAccess() }
+        Task { [weak self] in await self?.loadProducts() }
         Task { [weak self] in
-            await self?.refreshAccess()
-            await self?.loadProducts()
+            try? await Task.sleep(nanoseconds: 12_000_000_000)
+            guard let self, self.isCheckingAccess else { return }
+            self.isCheckingAccess = false
+            self.message = "Checking previous purchases is taking longer than usual. You can try Restore Purchases."
         }
     }
     deinit { listener?.cancel() }
@@ -117,8 +121,18 @@ final class ModuleStore: ObservableObject {
             return
         }
         guard knownIDs.contains(transaction.productID), transaction.productType == .nonConsumable else { return }
+        // Deliver a verified transaction immediately; a receipt-history request
+        // must not prevent a successful purchase (or refund) from taking effect.
+        entitlementRevision += 1
         pendingProductIDs.remove(transaction.productID)
-        await refreshAccess()
+        if transaction.revocationDate == nil && !transaction.isUpgraded {
+            ownedProductIDs.insert(transaction.productID)
+            message = "Purchase complete. Your module is unlocked."
+        } else {
+            ownedProductIDs.remove(transaction.productID)
+        }
+        isCheckingAccess = false
         await transaction.finish()
+        Task { [weak self] in await self?.refreshAccess() }
     }
 }

@@ -75,7 +75,7 @@ struct LockedModuleView: View {
             }
         }.padding(24).frame(maxWidth: .infinity, alignment: .leading)
             .background(.background, in: RoundedRectangle(cornerRadius: 24))
-            .accessibilityIdentifier("lockedModule_\(module.id)")
+
     }
 }
 
